@@ -2,7 +2,6 @@
 
 import program from 'commander';
 import * as Commands from "./commands"
-import fetch from 'node-fetch';
 
 class CdsCLI {
     static initialize(){
