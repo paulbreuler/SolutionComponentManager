@@ -3,7 +3,7 @@ import { Authentication } from "./Authentication/Authentication"
 import { EnvironmentDetails, AuthParamsPWD } from './RunSettings.development'
 import fetch from 'node-fetch'
 import { ComponentTypes } from "./componentTypes"
-import { SolutionComponent } from './SolutionManagement/SolutionComponent'
+import { SolutionComponent } from './SolutionManagement/Solution'
 import fs from 'fs';
 import os from 'os';
 

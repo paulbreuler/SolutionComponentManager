@@ -4,6 +4,12 @@
 
 Update the .vscode/launch.json configuration args to test various commands with debugging enabled.
 
+Add the file `src\RunSettings.development.ts`, which is templated in `tests\RunSettings.development.template.ts`. Copy the file to the specified location, then modify the values for your environment. The tool currently does not support adding credentials at runtime.
+
+Make sure to update the import paths to the following
+ - `import { IAuthParams, GrantType } from './Authentication/AuthParams'`
+ - `import { IEnvironmentDetails } from "./Authentication/EnvironmentDetails"`
+
 To run directly build the project and execute from node in terminal.
 
 - `npm run build`

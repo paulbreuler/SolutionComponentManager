@@ -40,7 +40,7 @@ export class SolutionComponent {
     }
 }
 
-interface Solution {
+export interface Solution {
     solutionid: string,
     uniquename?: string,
     version?: string
