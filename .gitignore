@@ -9,3 +9,6 @@ tsconfig.tsbuildinfo
 tests/RunSettings.development.ts
 tests/load.test.ts
 src/RunSettings.development.ts
+
+# runtime output
+output/

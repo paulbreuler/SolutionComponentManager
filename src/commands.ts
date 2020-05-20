@@ -3,6 +3,10 @@ import { Authentication } from "./Authentication/Authentication"
 import { EnvironmentDetails, AuthParamsPWD } from './RunSettings.development'
 import fetch from 'node-fetch'
 import { ComponentTypes } from "./componentTypes"
+import { SolutionComponent } from './SolutionManagement/SolutionComponent'
+import fs from 'fs';
+import os from 'os';
+
 
 export const WhoAmI = async () => {
     let access_token: string;
@@ -50,34 +54,15 @@ export const AddSolutionComponent = async () => {
     let body = await r.text();
 }
 
-class SolutionComponent {
-    public objectId: string;
-    public componentType: number;
-    public solutionId: string;
-    public solutionnName: string;
-    public name?: string;
-    public componentTypeName?: string;
-    public children?: SolutionComponent[];
-
-    instantiateFromJson(element: any) {
-        this.objectId = element.objectid;
-        this.componentType = element.componenttype;
-        this.solutionId = element._solutionid_value;
-        this.componentTypeName = ComponentTypes[element.componenttype];
-    }
-}
-
-
-
 export const GetSolutionComponents = async () => {
     let access_token: string;
 
-    let response: any = await Authentication.authenticate(AuthParamsPWD);
-    let data = await response.json();
-    access_token = data.access_token;
+    let authResponse: any = await Authentication.authenticate(AuthParamsPWD);
+    let authJson = await authResponse.json();
+    access_token = authJson.access_token;
 
     // Get all solution components from a solution and expand any parent components to show children. (e.g. Entity will have attributes nested in object)
-    let r = await fetch(`${EnvironmentDetails.org_url}/solutioncomponents?$filter=solutionid/uniquename eq 'Core'&$expand=solutionid($select=uniquename),solutioncomponent_parent_solutioncomponent`,
+    let response = await fetch(`${EnvironmentDetails.org_url}/solutioncomponents?$filter=solutionid/uniquename eq 'Core'&$expand=solutionid($select=uniquename),solutioncomponent_parent_solutioncomponent`,
         {
             method: "GET", headers: {
                 accept: "application/json",
@@ -88,12 +73,52 @@ export const GetSolutionComponents = async () => {
             }
         });
 
-    let json = await r.json();
+    let solutionComponentResponse = await response.json();
 
+    let solutioncomponentCollection: Array<SolutionComponent> = generateComponents(solutionComponentResponse);
+
+    let index = 0;
+    for (var component of solutioncomponentCollection) {
+        let response = await getActualComponent(component, access_token);
+
+        if (typeof response.name === "string") {
+            solutioncomponentCollection[index].friendlyName = response.name;
+        } else if (typeof response.EntityMetadata === "object") {
+            solutioncomponentCollection[index].friendlyName = response.EntityMetadata.DisplayName.LocalizedLabels[0].Label;
+            solutioncomponentCollection[index].logicalName = response.EntityMetadata.LogicalName;
+
+            // To get name of child attributes.
+            // for children n = x, where x is small num
+                // scan all attributes in metadata for entity m = y where y --> 300
+                //response.EntityMetadata.Attributes.forEach(att => {console.log(att.LogicalName)})
+        }
+        index++;
+    }
+
+    let data: string = JSON.stringify(solutioncomponentCollection);
+
+    let dir = "./output";
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+
+    let file: string = `${dir}/solutionComponents.json`;
+    fs.writeFile(file, data, (err) => {
+        if (err) throw err;
+        console.log(`Data written to file: ${file}`);
+    });
+};
+
+/**
+ * Parse Power Apps web API JSON response solution components into an array.
+ * @param json Web API JSON response 
+ * @returns Array<SolutionComponent>
+ */
+function generateComponents(json: any): Array<SolutionComponent> {
     let solutioncomponentCollection: Array<SolutionComponent> = new Array<SolutionComponent>();
 
+    // Build array
     json.value.forEach(element => {
-
         let component: SolutionComponent = new SolutionComponent();
         // Ignore attributes they will be nested under the entity
         if (element.componenttype !== ComponentTypes.attribute) {
@@ -101,9 +126,9 @@ export const GetSolutionComponents = async () => {
 
             component.solutionnName = element.solutionid.uniquename;
 
-
             switch (element.componenttype) {
                 case ComponentTypes.entity:
+                    // Add children
                     component.children = new Array<any>();
                     element.solutioncomponent_parent_solutioncomponent.forEach(element => {
                         let childComponent: SolutionComponent = new SolutionComponent();
@@ -116,35 +141,31 @@ export const GetSolutionComponents = async () => {
                     break;
             }
 
-
             solutioncomponentCollection.push(component);
         }
     });
 
-    // Get all unamanged solution components
-    // ID
-    // Component --> ComponentTypes.json
-    // What is this? Actualy name (Entity name, workflow name... etc.)
+    return solutioncomponentCollection;
+}
 
-    let index = 0;
-    for (var component of solutioncomponentCollection) {
-        let response = await GetActualComponent(component, access_token);
-
-        solutioncomponentCollection[index].name = response.name;
-        index++;
-    }
-
-    console.log(`GetSolutionComponents Response: ${JSON.stringify(json)}`)
-};
-
-
-
-async function GetActualComponent(component: any, access_token: any) {
+/**
+ * 
+ * @param component Solution component to retrieve from API in its proper form matching its componentType (e.g. Entity, Form, etc.)
+ * @param access_token bearer token for Web API
+ * @returns JSON representing the actual component in Power Apps
+ */
+async function getActualComponent(component: SolutionComponent, access_token: any) {
 
     let apiCallType: string = component.componentTypeName;
+    let restRequest: string = `(${component.objectId.replace(/{|}/g, "")})`;
 
 
-    let r = await fetch(`${EnvironmentDetails.org_url}/${apiCallType}(${component.objectId.replace(/{|}/g, "")})`,
+    if (apiCallType === ComponentTypes[ComponentTypes.entity]) {
+        apiCallType = "RetrieveEntity"
+        restRequest = `(EntityFilters=Microsoft.Dynamics.CRM.EntityFilters'Attributes',MetadataId=${component.objectId.replace(/{|}/g, "")},RetrieveAsIfPublished=false)`
+    }
+
+    let response = await fetch(`${EnvironmentDetails.org_url}/${apiCallType}${restRequest}`,
         {
             method: "GET", headers: {
                 accept: "application/json",
@@ -155,32 +176,7 @@ async function GetActualComponent(component: any, access_token: any) {
             }
         });
 
-    let json = await r.json();
+    let json = await response.json();
 
     return json;
 }
-
-
-export const GetDefinitions = async () => {
-    let access_token: string;
-
-    let response: any = await Authentication.authenticate(AuthParamsPWD);
-    let data = await response.json();
-    access_token = data.access_token;
-
-
-    let r = await fetch(`${EnvironmentDetails.org_url}/EntityDefinitions(e79e7977-de99-ea11-a811-000d3a579cbc)?$select=LogicalName,SchemaName,ObjectTypeCode&$expand=Attributes($select=DisplayName)`,
-        {
-            method: "GET", headers: {
-                accept: "application/json",
-                "OData-MaxVersion": "4.0",
-                "OData-Version": "4.0",
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: `Bearer ${access_token}`
-            }
-        });
-
-    let json = await r.json();
-
-    console.log(`GetDefinitions Response: ${JSON.stringify(json)}`)
-};
