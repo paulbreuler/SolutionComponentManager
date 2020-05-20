@@ -61,8 +61,9 @@ export const GetSolutionComponents = async () => {
     let authJson = await authResponse.json();
     access_token = authJson.access_token;
 
+    let solutionName = "CORE" // Make a parameter
     // Get all solution components from a solution and expand any parent components to show children. (e.g. Entity will have attributes nested in object)
-    let response = await fetch(`${EnvironmentDetails.org_url}/solutioncomponents?$filter=solutionid/uniquename eq 'Core'&$expand=solutionid($select=uniquename),solutioncomponent_parent_solutioncomponent`,
+    let response = await fetch(`${EnvironmentDetails.org_url}/solutioncomponents?$filter=solutionid/uniquename eq '${solutionName}'&$expand=solutionid($select=uniquename, version),solutioncomponent_parent_solutioncomponent`,
         {
             method: "GET", headers: {
                 accept: "application/json",
@@ -123,8 +124,6 @@ function generateComponents(json: any): Array<SolutionComponent> {
         // Ignore attributes they will be nested under the entity
         if (element.componenttype !== ComponentTypes.attribute) {
             component.instantiateFromJson(element);
-
-            component.solutionnName = element.solutionid.uniquename;
 
             switch (element.componenttype) {
                 case ComponentTypes.entity:
