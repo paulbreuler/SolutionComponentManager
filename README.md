@@ -12,3 +12,9 @@ To run directly build the project and execute from node in terminal.
 ## Live build / debug
 
 Use `npm run build:watch` to track file changes and run the debugger in VS Code.
+
+## Contributing
+
+DO NOT MODIFY THE MASTER BRANCH. 
+
+Please create a separate branch and create pull requests to merge changes.
