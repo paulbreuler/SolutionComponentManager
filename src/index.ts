@@ -39,6 +39,18 @@ class CdsCLI {
         .description('Add a solution component(s) to a solution')
         .action(() => Commands.AddSolutionComponent());
 
+        program
+        .command("GetSolutionComponents")
+        .alias('add')
+        .description('Get solution component(s) from a solution')
+        .action(() => Commands.GetSolutionComponents());
+
+        program
+        .command("GetDefinitions")
+        .alias('add')
+        .description('Add a solution component(s) to a solution')
+        .action(() => Commands.GetDefinitions());
+
         program.parse(process.argv)
     }
 }
