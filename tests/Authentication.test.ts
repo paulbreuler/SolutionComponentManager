@@ -2,9 +2,9 @@
 import {
     expect
 } from 'chai';
-import { Authentication } from "../src/Authentication";
+import { Authentication } from "../src/Authentication/Authentication";
 import fetch from 'node-fetch';
-import { AuthParams, EnvironmentDetails, AuthParamsPWD } from "./Runsettings.development"
+import { AuthParams, EnvironmentDetails, AuthParamsPWD } from "../src/Runsettings.development"
 
 describe('PowerApps Authentication Tests', function () {
     let access_token: string;

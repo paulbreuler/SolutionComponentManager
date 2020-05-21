@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-import * as Commands from "./commands"
+import * as Commands from "./Commands"
+import chalk from 'chalk'
+import fs from 'fs';
+import os from 'os';
 
 class CdsCLI {
     static initialize() {
-        const chalk = require("chalk");
         const boxen = require("boxen");
 
         const greeting = chalk.white.bold("CDS Assistant CLI");
@@ -40,17 +42,35 @@ class CdsCLI {
             .requiredOption("--componentType <type>", "REQUIRED | The solution component to add to the unmanaged solution.")
             .option("--addRequiredComponents <true|false>", "Indicates whether other solution components that are required by the solution component should also be added to the unmanaged solution.", false)
             .option("--doNotIncludeSubcomponents <true|false>", "Indicates whether the subcomponents should be included.", true)
-            .action((options) => {
+            .action(async (options) => {
                 console.log(chalk.white.bold(`Attempting to add component to ${options.solutionUniqueName}`));
-                Commands.AddSolutionComponent(options.componentId, options.componentType, options.solutionUniqueName, options.addRequiredComponents, options.doNotIncludeSubcomponents)
+                let response = await Commands.AddSolutionComponent(options.componentId, options.componentType, options.solutionUniqueName, options.addRequiredComponents, options.doNotIncludeSubcomponents);
+                let json = await response.json();
+                if (response.status === 200) {
+                    console.log(`${chalk.greenBright("Success")} | Added component (${options.componentId}) of type ${options.componentType} to ${options.solutionUniqueName} solution`);
+                    console.log(`Solution component ID: ${json.id}`);
+                }
             });
 
         program.command("GetSolutionComponents")
             .arguments('<solution_unique_name>')
             .description('Get solution component(s) from a solution')
-            .action((solutionName) => {
+            .action(async (solutionName) => {
                 console.log(chalk.white.bold(`Retrieving components for solution: ${solutionName}`));
-                Commands.GetSolutionComponents(solutionName);
+                let solutioncomponentCollection = await Commands.GetSolutionComponents(solutionName);
+
+                let data: string = JSON.stringify(solutioncomponentCollection);
+
+                let dir = "./output";
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir);
+                }
+            
+                let file: string = `${dir}/solutionComponents.json`;
+                fs.writeFile(file, data, (err) => {
+                    if (err) throw err;
+                    console.log(`${chalk.greenBright("Success")} | Data written to file: ${file}`);
+                });
             })
             .on('--help', function () {
                 console.log('');

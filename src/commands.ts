@@ -4,9 +4,6 @@ import { EnvironmentDetails, AuthParamsPWD } from './RunSettings.development'
 import fetch from 'node-fetch'
 import { ComponentTypes } from "./componentTypes"
 import { SolutionComponent } from './SolutionManagement/Solution'
-import fs from 'fs';
-import os from 'os';
-
 
 export const WhoAmI = async () => {
     let access_token: string;
@@ -54,14 +51,14 @@ export const AddManySolutionComponent = async () => {
     let body = await r.text();
 }
 
-export async function AddSolutionComponent(componentId: string, componentType: number, solutionUniqueName: string, addRequiredComponents: boolean, doNotIncludeSubcomponents: boolean) {
+export async function AddSolutionComponent(componentId: string, componentType: number, solutionUniqueName: string, addRequiredComponents: boolean = false, doNotIncludeSubcomponents: boolean = true) {
     let access_token: string;
 
-    let response: any = await Authentication.authenticate(AuthParamsPWD);
-    let data = await response.json();
+    let authResponse: any = await Authentication.authenticate(AuthParamsPWD);
+    let data = await authResponse.json();
     access_token = data.access_token;
 
-    let r = await fetch(`${EnvironmentDetails.org_url}/AddSolutionComponent`,
+    let response = await fetch(`${EnvironmentDetails.org_url}/AddSolutionComponent`,
         {
             method: "POST", headers: {
                 accept: "application/json",
@@ -78,16 +75,14 @@ export async function AddSolutionComponent(componentId: string, componentType: n
                 }`
         });
 
-    let json = await r.json();
-    if (r.status === 200) {
-        console.log(`Successfully added component (${componentId}) of type ${componentType} to ${solutionUniqueName} solution`);
-        console.log(`Solution component ID: ${json.id}`);
-    }
-
+    return response;
 }
 
-
-export async function GetSolutionComponents(solutionName) {
+/**
+ * Generates a collection of components with relevant data based on solutioncomponents api call
+ * @param solutionName Name of solution
+ */
+export async function GetSolutionComponents(solutionName): Promise<SolutionComponent[]> {
     let access_token: string;
 
     let authResponse: any = await Authentication.authenticate(AuthParamsPWD);
@@ -105,6 +100,10 @@ export async function GetSolutionComponents(solutionName) {
                 Authorization: `Bearer ${access_token}`
             }
         });
+
+    if (response.status !== 200) {
+        return new Array<SolutionComponent>();
+    }
 
     let solutionComponentResponse = await response.json();
 
@@ -128,18 +127,7 @@ export async function GetSolutionComponents(solutionName) {
         index++;
     }
 
-    let data: string = JSON.stringify(solutioncomponentCollection);
-
-    let dir = "./output";
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-
-    let file: string = `${dir}/solutionComponents.json`;
-    fs.writeFile(file, data, (err) => {
-        if (err) throw err;
-        console.log(`Data written to file: ${file}`);
-    });
+    return solutioncomponentCollection;
 };
 
 /**
