@@ -54,14 +54,13 @@ export const AddSolutionComponent = async () => {
     let body = await r.text();
 }
 
-export const GetSolutionComponents = async () => {
+export async function GetSolutionComponents(solutionName) {
     let access_token: string;
 
     let authResponse: any = await Authentication.authenticate(AuthParamsPWD);
     let authJson = await authResponse.json();
     access_token = authJson.access_token;
 
-    let solutionName = "CORE" // Make a parameter
     // Get all solution components from a solution and expand any parent components to show children. (e.g. Entity will have attributes nested in object)
     let response = await fetch(`${EnvironmentDetails.org_url}/solutioncomponents?$filter=solutionid/uniquename eq '${solutionName}'&$expand=solutionid($select=uniquename, version),solutioncomponent_parent_solutioncomponent`,
         {

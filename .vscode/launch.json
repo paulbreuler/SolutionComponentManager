@@ -12,7 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\dist\\index.js",
-            "args": ["GetSolutionComponents"]
+            "args": ["GetSolutionComponents CORE"]
         }
     ]
 }

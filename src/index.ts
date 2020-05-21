@@ -20,8 +20,10 @@ class CdsCLI {
         };
         const msgBox = boxen( greeting, boxenOptions );
         
-        console.log(msgBox);
-        
+        if(process.argv.length < 3){
+            console.log(msgBox);
+        }
+            
         program
         .version('0.0.1')
         .description('Command line CDS Management Application')
@@ -34,15 +36,24 @@ class CdsCLI {
         
         program
         .command("AddSolutionComponent")
-        .alias('add')
         .description('Add a solution component(s) to a solution')
         .action(() => Commands.AddSolutionComponent());
 
         program
         .command("GetSolutionComponents")
-        .alias('add')
+        .arguments('<solution_unique_name>')
         .description('Get solution component(s) from a solution')
-        .action(() => Commands.GetSolutionComponents());
+        .action((solutionName) => {
+            console.log(chalk.white.bold(`Retrieving components for solution: ${solutionName}`)); 
+            Commands.GetSolutionComponents(solutionName);
+        })
+        .on('--help', function() {
+            console.log('');
+            console.log('Examples:');
+            console.log('');
+            console.log('  $ deploy GetSolutionComponents <solution unique name>');
+            console.log('  $ deploy GetSolutionComponents mySolution');
+          });;
 
         program.parse(process.argv)
     }
