@@ -33,7 +33,7 @@ export const WhoAmI = async () => {
 };
 
 
-export const AddSolutionComponent = async () => {
+export const AddManySolutionComponent = async () => {
     let access_token: string;
 
     let response: any = await Authentication.authenticate(AuthParamsPWD);
@@ -53,6 +53,39 @@ export const AddSolutionComponent = async () => {
 
     let body = await r.text();
 }
+
+export async function AddSolutionComponent(componentId: string, componentType: number, solutionUniqueName: string, addRequiredComponents: boolean, doNotIncludeSubcomponents: boolean) {
+    let access_token: string;
+
+    let response: any = await Authentication.authenticate(AuthParamsPWD);
+    let data = await response.json();
+    access_token = data.access_token;
+
+    let r = await fetch(`${EnvironmentDetails.org_url}/AddSolutionComponent`,
+        {
+            method: "POST", headers: {
+                accept: "application/json",
+                "OData-MaxVersion": "4.0",
+                "OData-Version": "4.0",
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${access_token}`
+            }, body: `{
+                    "ComponentId": "${componentId}",
+                    "ComponentType": ${componentType},
+                    "AddRequiredComponents": ${addRequiredComponents},
+                    "DoNotIncludeSubcomponents": ${doNotIncludeSubcomponents},
+                    "SolutionUniqueName": "${solutionUniqueName}"
+                }`
+        });
+
+    let json = await r.json();
+    if (r.status === 200) {
+        console.log(`Successfully added component (${componentId}) of type ${componentType} to ${solutionUniqueName} solution`);
+        console.log(`Solution component ID: ${json.id}`);
+    }
+
+}
+
 
 export async function GetSolutionComponents(solutionName) {
     let access_token: string;
@@ -89,8 +122,8 @@ export async function GetSolutionComponents(solutionName) {
 
             // To get name of child attributes.
             // for children n = x, where x is small num
-                // scan all attributes in metadata for entity m = y where y --> 300
-                //response.EntityMetadata.Attributes.forEach(att => {console.log(att.LogicalName)})
+            // scan all attributes in metadata for entity m = y where y --> 300
+            //response.EntityMetadata.Attributes.forEach(att => {console.log(att.LogicalName)})
         }
         index++;
     }
@@ -98,7 +131,7 @@ export async function GetSolutionComponents(solutionName) {
     let data: string = JSON.stringify(solutioncomponentCollection);
 
     let dir = "./output";
-    if (!fs.existsSync(dir)){
+    if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
     }
 

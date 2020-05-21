@@ -7,12 +7,22 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "AddSolutionComponent",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\dist\\index.js",
-            "args": ["GetSolutionComponents CORE"]
+            "program": "${workspaceFolder}/dist/index.js",
+            "args": ["AddSolutionComponent", "--solutionUniqueName","CORE", "--componentId", "e79e7977-de99-ea11-a811-000d3a579cbc", "--componentType","1" ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "GetSolutionComponents",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/dist/index.js",
+            "args": ["GetSolutionComponents", "core"]
         }
     ]
 }
