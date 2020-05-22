@@ -7,6 +7,21 @@ import { EnvironmentDetails } from "../src/Runsettings.development"
 import { getTestAccessToken } from './Authentication.test'
 import { DeserializeJSON } from '../src/Utility/Helpers'
 
+module Automobile {
+   export class Car {
+        id: string;
+        make: string;
+        model: string;
+        year: number;
+        owner: Owner;
+    }
+
+    export class Owner {
+        name: string;
+    }
+}
+
+
 describe('PowerApps Basic Tests', function () {
     let access_token: string;
 
@@ -41,6 +56,19 @@ describe('PowerApps Basic Tests', function () {
         expect(result.make).to.equal("Ford");
         expect(result.model).to.equal("Escape");
         expect(result.year).to.equal(2020);
+    });
+
+    it("DeserializeJSON - nested object", async function () {
+        let dj: DeserializeJSON = new DeserializeJSON();
+
+        let result: Automobile.Car = dj.deserializeFromJson(JSON.parse("{\"id\":1,\"make\":\"Ford\",\"model\":\"Escape\",\"year\":2020, \"owner\": { \"name\": \"Paul\"}}"), Automobile, Automobile.Car);
+
+        expect(result).to.exist;
+        expect(result.id).to.equal(1);
+        expect(result.make).to.equal("Ford");
+        expect(result.model).to.equal("Escape");
+        expect(result.year).to.equal(2020);
+        expect(result.owner.name).to.equal("Paul");
     });
 
 });

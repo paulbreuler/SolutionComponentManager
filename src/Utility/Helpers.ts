@@ -71,16 +71,26 @@ function padTime(i: any) {
 }
 
 export class DeserializeJSON {
-    public deserializeFromJson(json: JSON) {
-        var instance = this;
+    /**
+     * Instantiates and object of 'this' type or provided class type
+     * @param json 
+     * @param mod module | namespace
+     * @param clazz class
+     * @returns object of type 'this' or clazz
+     */
+    public deserializeFromJson(json: JSON, mod?: any, clazz?: any) {
+        var instance: any = clazz ? clazz : this;
         for (var prop in json) {
             if (!json.hasOwnProperty(prop)) {
                 continue;
             }
             // If nested object call recusively
-            // if(typeof json[prop] === 'object') {
-            //     instance[prop] = deserialize(json[prop], module, module[prop]);
-            instance[prop] = json[prop];
+            if (typeof json[prop] === 'object') {
+                instance[prop] = this.deserializeFromJson(json[prop], mod, mod[prop] as typeof clazz);
+            } else {
+                instance[prop] = json[prop];
+            }
+
         }
         return instance;
     }
