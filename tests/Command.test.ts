@@ -2,8 +2,6 @@
 import {
     expect
 } from 'chai';
-import { Authentication, PowerAppsConnection } from "../src/Authentication/Authentication";
-import { AuthParams, EnvironmentDetails, AuthParamsPWD } from "../src/Runsettings.development"
 import * as Commands from '../src/Commands'
 import { getTestAccessToken } from './Authentication.test'
 

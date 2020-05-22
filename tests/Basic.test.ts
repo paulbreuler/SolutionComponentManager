@@ -2,16 +2,15 @@
 import {
     expect
 } from 'chai';
-import { Authentication, PowerAppsConnection } from "../src/Authentication/Authentication";
 import fetch from 'node-fetch';
-import { AuthParams, EnvironmentDetails, AuthParamsPWD } from "../src/Runsettings.development"
-import {getTestAccessToken} from './Authentication.test'
+import { EnvironmentDetails } from "../src/Runsettings.development"
+import { getTestAccessToken } from './Authentication.test'
 
 describe('PowerApps Basic Tests', function () {
     let access_token: string;
 
     before(async () => {
-      access_token = await getTestAccessToken();
+        access_token = await getTestAccessToken();
     })
 
     it("GET /WhoAmI", async function () {
