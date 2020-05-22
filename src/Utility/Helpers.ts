@@ -19,7 +19,7 @@ export enum MessageType {
     ERROR, WARN, INFO, DEBUG
 }
 
-export function log(messageType: MessageType, message: string) {
+export function generateTimeStamp(isFriendly?: boolean) {
     var time = new Date();
     let y = time.getFullYear();
     let m = time.getMonth();
@@ -32,7 +32,20 @@ export function log(messageType: MessageType, message: string) {
     min = padTime(min);
     sec = padTime(sec);
 
-    let timeStamp: string = `[${y}-${m}-${d} ${hour}:${min}:${sec}]`
+    if (isFriendly) {
+        let timeStamp: string = `[${y}-${m}-${d} ${hour}:${min}:${sec}]`
+
+        return timeStamp;
+    } else {
+        let timeStamp: string = `${y}${m}${d}_${hour}${min}${sec}`
+
+        return timeStamp;
+    }
+
+}
+
+export function log(messageType: MessageType, message: string) {
+    let timeStamp = generateTimeStamp(true);
 
     switch (messageType) {
         case MessageType.ERROR:

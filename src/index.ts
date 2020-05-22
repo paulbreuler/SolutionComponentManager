@@ -61,7 +61,7 @@ class CdsCLI {
                 let solutioncomponentCollection = await Commands.GetSolutionComponents(solutionName);
                 let data: string = JSON.stringify(solutioncomponentCollection);
 
-                Helpers.writeToFile(data, `solutionComponents_${solutionName}.json`)
+                Helpers.writeToFile(data, `solComponents_${solutionName}_${Helpers.generateTimeStamp()}.json`)
             })
             .on('--help', function () {
                 console.log('');
@@ -80,7 +80,7 @@ class CdsCLI {
                 let solutionComponentCollection = await Commands.GetSolutionComponentsSummaries(solutionId);
                 let data: string = JSON.stringify(solutionComponentCollection);
 
-                Helpers.writeToFile(data, `solutionComponentSummaries_${solutionId}.json`);
+                Helpers.writeToFile(data, `solComponentSummaries_${solutionId}_${Helpers.generateTimeStamp()}.json`);
             })
             .on('--help', function () {
                 console.log('');
