@@ -2,7 +2,7 @@
 import {
     expect
 } from 'chai';
-import { Authentication } from "../src/Authentication/Authentication";
+import { Authentication, PowerAppsConnection } from "../src/Authentication/Authentication";
 import fetch from 'node-fetch';
 import { AuthParams, EnvironmentDetails, AuthParamsPWD } from "../src/Runsettings.development"
 
@@ -10,9 +10,8 @@ describe('PowerApps Authentication Tests', function () {
     let access_token: string;
 
     before(async () => {
-        let response: any = await Authentication.authenticate(AuthParamsPWD);
-        let data = await response.json();
-        access_token = data.access_token;
+        let response: PowerAppsConnection = await Authentication.authenticate(AuthParamsPWD);
+        access_token = response.access_token;
     })
 
     it("GET /WhoAmI", async function () {

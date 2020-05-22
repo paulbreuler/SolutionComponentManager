@@ -2,6 +2,7 @@ import { IAuthParams, GrantType } from '../src/Authentication/AuthParams'
 import { IEnvironmentDetails } from "../src/Authentication/EnvironmentDetails"
 
 export const AuthParams: IAuthParams = {
+    name: "A Friendly Name",
     client_id: "Azure App Registration Application (client) ID",
     client_secret: "Azure App Registration Secret",
     grant_type: GrantType.CLIENT_CREDENTIALS,
@@ -10,6 +11,7 @@ export const AuthParams: IAuthParams = {
 }
 
 export const AuthParamsPWD: IAuthParams = {
+    name: "A Friendly Name",
     client_id: "Azure App Registration Application (client) ID",
     client_secret: "Azure App Registration Secret",
     grant_type: GrantType.PASSWORD,

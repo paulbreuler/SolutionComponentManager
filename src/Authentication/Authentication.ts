@@ -2,14 +2,47 @@ import fetch, { RequestInit } from "node-fetch";
 import { URLSearchParams } from "url";
 import { IAuthParams, GrantType } from "./AuthParams";
 
-// TODO condense auth types to prevent duplication of code
+export class PowerAppsConnection {
+    name: string;
+    access_token: string;
+    expires_in: string;
+    expires_on: string;
+    ext_expires_in: string;
+    not_before: string;
+    refresh_token: string;
+    resource: string;
+    scope: string;
+    token_type: string;
+
+    public refreshToken() {
+        throw "Not Implemented";
+    }
+}
+
 export class Authentication {
+    private static PowerAppsConnections = new Array<PowerAppsConnection>();
+
+    public static getConnections() {
+        return this.PowerAppsConnections;
+    }
 
     /**
      * Authenticate to Dynamics 365 / Power Apps Customer Engagement
      * @param config Configuration of type IAuthParams
      */
-    public static async authenticate(config: IAuthParams): Promise<any> {
+    public static async authenticate(config: IAuthParams): Promise<PowerAppsConnection> {
+
+        // Does the connection already exist?
+        if (this.PowerAppsConnections.length > 0) {
+            let conn: PowerAppsConnection | null = null;
+            for (var i = 0; i < this.PowerAppsConnections.length; i++) {
+                if (this.PowerAppsConnections[i].name == config.name) {
+                    conn = this.PowerAppsConnections[i];
+                    return conn;
+                }
+            }
+        }
+
         let urlencoded: URLSearchParams = new URLSearchParams();
         urlencoded.append("client_id", config.client_id);
         urlencoded.append("client_secret", config.client_secret);
@@ -36,11 +69,16 @@ export class Authentication {
             redirect: 'follow',
         };
 
-        let response = fetch(`https://login.microsoftonline.com/${config.tenant_id}/oauth2/token`, init)
-            .catch((error: any) => console.log('error', error));
+        let response = await fetch(`https://login.microsoftonline.com/${config.tenant_id}/oauth2/token`, init)
 
+        let json = await response.json();
 
-        return response;
+        let connection: PowerAppsConnection = json;
+        connection.name = config.name;
+
+        this.PowerAppsConnections.push(connection);
+
+        return connection;
     };
 
     /**

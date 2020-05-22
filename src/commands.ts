@@ -55,8 +55,7 @@ export async function AddSolutionComponent(componentId: string, componentType: n
     let access_token: string;
 
     let authResponse: any = await Authentication.authenticate(AuthParamsPWD);
-    let data = await authResponse.json();
-    access_token = data.access_token;
+    access_token = authResponse.access_token;
 
     let response = await fetch(`${EnvironmentDetails.org_url}/AddSolutionComponent`,
         {
@@ -88,8 +87,8 @@ export async function GetSolutionComponentsSummaries(solutionID) {
     let access_token: string;
 
     let authResponse: any = await Authentication.authenticate(AuthParamsPWD);
-    let authJson = await authResponse.json();
-    access_token = authJson.access_token;
+    access_token = authResponse.access_token;
+
     let response = await fetch(`${EnvironmentDetails.org_url}/msdyn_solutioncomponentsummaries?$filter=(msdyn_solutionid eq ${solutionID})`,
         {
             method: "GET", headers: {
@@ -120,8 +119,7 @@ export async function GetSolutionComponents(solutionName): Promise<SolutionCompo
     let access_token: string;
 
     let authResponse: any = await Authentication.authenticate(AuthParamsPWD);
-    let authJson = await authResponse.json();
-    access_token = authJson.access_token;
+    access_token = authResponse.access_token;
 
     // Get all solution components from a solution and expand any parent components to show children. (e.g. Entity will have attributes nested in object)
     let response = await fetch(`${EnvironmentDetails.org_url}/solutioncomponents?$filter=solutionid/uniquename eq '${solutionName}'&$expand=solutionid($select=uniquename, version),solutioncomponent_parent_solutioncomponent`,

@@ -106,5 +106,9 @@ export class SolutionComponentSummary {
     constructor() {
 
     }
+}
 
+export async function compare(solution1: SolutionComponentSummary, solution2: SolutionComponentSummary) {
+ // show solution diff
+ // What exists in solution1, solution2, and both?
 }

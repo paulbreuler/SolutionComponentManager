@@ -2,19 +2,18 @@
 import {
     expect
 } from 'chai';
-import { Authentication } from "../src/Authentication/Authentication";
-import fetch from 'node-fetch';
+import { Authentication, PowerAppsConnection } from "../src/Authentication/Authentication";
 import { AuthParams, EnvironmentDetails, AuthParamsPWD } from "../src/Runsettings.development"
 import * as Commands from '../src/Commands'
-import { SolutionComponent } from '../src/SolutionManagement/Solution';
 
 describe('Solution Management Tests', function () {
     let access_token: string;
 
     before(async () => {
-        let response: any = await Authentication.authenticate(AuthParamsPWD);
-        let data = await response.json();
-        access_token = data.access_token;
+        let response: PowerAppsConnection = await Authentication.authenticate(AuthParamsPWD);
+        expect(response.access_token).to.exist
+
+        access_token = response.access_token;
     })
 
     it("AddSolutionComponent", async function () {
@@ -27,6 +26,7 @@ describe('Solution Management Tests', function () {
         expect(json.id).to.match(/^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/i, "UUID format required");
     });
 
+    // A bit slower due to multiple requests needed to compile components 
     it("GetSolutionComponents", async function () {
         this.slow(10000);
 
@@ -35,8 +35,9 @@ describe('Solution Management Tests', function () {
         expect(componentCollection.length).to.be.greaterThan(0);
     });
 
+    // More efficient but an undocumented feature
     it("GetSolutionComponentsSummary", async function () {
-        this.slow(10000);
+        this.slow(2000);
 
         let componentCollection = await Commands.GetSolutionComponentsSummaries("b0367b29-ed8a-ea11-a812-000d3a579ca6");
 
