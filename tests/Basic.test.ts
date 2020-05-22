@@ -10,7 +10,7 @@ describe('PowerApps Basic Tests', function () {
     let access_token: string;
 
     before(async () => {
-        access_token = await getTestAccessToken();
+        access_token = (await getTestAccessToken()).access_token;
     })
 
     it("GET /WhoAmI", async function () {

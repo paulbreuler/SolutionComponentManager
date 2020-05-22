@@ -9,7 +9,7 @@ describe('Solution Management Tests', function () {
     let access_token: string;
 
     before(async () => {
-        access_token = await getTestAccessToken();
+        access_token = (await getTestAccessToken()).access_token;
     })
 
     it("AddSolutionComponent", async function () {
