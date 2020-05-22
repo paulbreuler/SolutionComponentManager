@@ -69,3 +69,19 @@ function padTime(i: any) {
     }
     return i;
 }
+
+export class DeserializeJSON {
+    public deserializeFromJson(json: JSON) {
+        var instance = this;
+        for (var prop in json) {
+            if (!json.hasOwnProperty(prop)) {
+                continue;
+            }
+            // If nested object call recusively
+            // if(typeof json[prop] === 'object') {
+            //     instance[prop] = deserialize(json[prop], module, module[prop]);
+            instance[prop] = json[prop];
+        }
+        return instance;
+    }
+}

@@ -1,7 +1,7 @@
 import fetch, { RequestInit } from "node-fetch";
 import { URLSearchParams } from "url";
 import { IAuthParams, GrantType } from "./AuthParams";
-
+import {DeserializeJSON} from '../Utility/Helpers'
 
 interface IPowerAppsConnection {
     name: string;
@@ -16,9 +16,10 @@ interface IPowerAppsConnection {
     token_type: string;
 
     refreshToken(config: IAuthParams): Promise<string>;
+    deserializeFromJson(json: JSON): PowerAppsConnection;
 }
 
-export class PowerAppsConnection implements IPowerAppsConnection {
+export class PowerAppsConnection extends DeserializeJSON implements IPowerAppsConnection {
     name: string = "";
     access_token: string;
     expires_in: string;
@@ -30,19 +31,7 @@ export class PowerAppsConnection implements IPowerAppsConnection {
     scope: string;
     token_type: string;
 
-    public jsonToConnection(json) {
-        var instance = this;
-        for (var prop in json) {
-            if (!json.hasOwnProperty(prop)) {
-                continue;
-            }
-            instance[prop] = json[prop];
-        }
-
-        return instance;
-    }
-
-    public async refreshToken(config: IAuthParams) {
+    public async refreshToken(config: IAuthParams): Promise<string> {
         var urlencoded = new URLSearchParams();
         urlencoded.append("client_id", config.client_id);
         urlencoded.append("client_secret", config.client_secret);
@@ -61,7 +50,7 @@ export class PowerAppsConnection implements IPowerAppsConnection {
 
         let json = await response.json();
 
-        this.jsonToConnection(json); // ensure content is updated in this
+        this.deserializeFromJson(json); // ensure content is updated in this
 
         return json.access_token;
     }
@@ -122,7 +111,7 @@ export class Authentication {
         let json = await response.json();
 
         let connection: PowerAppsConnection = new PowerAppsConnection();
-        connection.jsonToConnection(json);
+        connection.deserializeFromJson(json);
         connection.name = config.name;
 
         this.powerAppsConnections.push(connection);
