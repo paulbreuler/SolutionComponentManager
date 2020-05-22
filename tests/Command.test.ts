@@ -2,8 +2,10 @@
 import {
     expect
 } from 'chai';
-import * as Commands from '../src/Commands'
-import { getTestAccessToken } from './Authentication.test'
+import * as Commands from '../src/Commands';
+import { getTestAccessToken } from './Authentication.test';
+import * as Helpers from '../src/Utility/Helpers';
+import { SolutionComponentSummary } from '../src/SolutionManagement/Solution';
 
 describe('Solution Management Tests', function () {
     let access_token: string;
@@ -29,6 +31,59 @@ describe('Solution Management Tests', function () {
         let componentCollection = await Commands.GetSolutionComponents("CORE");
 
         expect(componentCollection.length).to.be.greaterThan(0);
+    });
+
+    it("Read solution summary from file", async function () {
+
+        let scsCollection: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+
+        let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
+
+        contents.forEach((element: any) => {
+            let scs: SolutionComponentSummary = new SolutionComponentSummary();
+
+            scs.deserializeFromJson(element);
+            scsCollection.push(scs);
+        })
+
+    });
+
+    it("Compare solution summaries", async function () {
+
+        let scsCollection: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+
+        let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
+
+        contents.forEach((element: any) => {
+            let scs: SolutionComponentSummary = new SolutionComponentSummary();
+
+            scs.deserializeFromJson(element);
+            scsCollection.push(scs);
+        })
+
+        let scsCollection_2: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+
+        let contents_2: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_B.json`);
+
+        contents_2.forEach((element: any) => {
+            let scs: SolutionComponentSummary = new SolutionComponentSummary();
+
+            scs.deserializeFromJson(element);
+            scsCollection_2.push(scs);
+        })
+
+        let isEqual = true;
+        for (let i = 0; i < scsCollection.length; i++) {
+            for (let j = 0; i < scsCollection_2.length; j++) {
+                isEqual = scsCollection[i].equalsNaive(scsCollection_2[j]);
+                if (isEqual === false)
+                    break;
+            }
+            if (isEqual === false)
+                break;
+        }
+        
+        expect(isEqual).to.be.false;
     });
 
     // More efficient but an undocumented feature

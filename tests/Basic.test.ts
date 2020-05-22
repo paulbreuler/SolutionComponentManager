@@ -5,10 +5,10 @@ import {
 import fetch from 'node-fetch';
 import { EnvironmentDetails } from "../src/Runsettings.development"
 import { getTestAccessToken } from './Authentication.test'
-import { DeserializeJSON } from '../src/Utility/Helpers'
+import * as Helpers from '../src/Utility/Helpers'
 
 module Automobile {
-   export class Car {
+    export class Car {
         id: string;
         make: string;
         model: string;
@@ -47,7 +47,7 @@ describe('PowerApps Basic Tests', function () {
     });
 
     it("DeserializeJSON", async function () {
-        let dj: DeserializeJSON = new DeserializeJSON();
+        let dj: Helpers.DeserializeJSON = new Helpers.DeserializeJSON();
 
         let result: any = dj.deserializeFromJson(JSON.parse("{\"id\":1,\"make\":\"Ford\",\"model\":\"Escape\",\"year\":2020}"));
 
@@ -59,7 +59,7 @@ describe('PowerApps Basic Tests', function () {
     });
 
     it("DeserializeJSON - nested object", async function () {
-        let dj: DeserializeJSON = new DeserializeJSON();
+        let dj: Helpers.DeserializeJSON = new Helpers.DeserializeJSON();
 
         let result: Automobile.Car = dj.deserializeFromJson(JSON.parse("{\"id\":1,\"make\":\"Ford\",\"model\":\"Escape\",\"year\":2020, \"owner\": { \"name\": \"Paul\"}}"), Automobile, Automobile.Car);
 

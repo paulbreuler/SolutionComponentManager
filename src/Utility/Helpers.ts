@@ -15,6 +15,13 @@ export async function writeToFile(data: string, fileName: string) {
     });
 }
 
+export async function jsonFromFile(file: string) {
+    let rawdata = fs.readFileSync(file, null) as any;
+    let json = JSON.parse(rawdata);
+
+    return json;
+}
+
 export enum MessageType {
     ERROR, WARN, INFO, DEBUG
 }
@@ -85,7 +92,7 @@ export class DeserializeJSON {
                 continue;
             }
             // If nested object call recusively
-            if (typeof json[prop] === 'object') {
+            if (typeof json[prop] === 'object' && json[prop]) {
                 instance[prop] = this.deserializeFromJson(json[prop], mod, mod[prop] as typeof clazz);
             } else {
                 instance[prop] = json[prop];

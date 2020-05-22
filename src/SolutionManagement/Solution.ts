@@ -1,4 +1,5 @@
 import { ComponentTypes } from "../componentTypes"
+import { DeserializeJSON } from "../Utility/Helpers";
 
 export class SolutionComponent {
     // Default 
@@ -46,7 +47,7 @@ export interface Solution {
     version?: string
 }
 
-export class SolutionComponentSummary {
+export class SolutionComponentSummary extends DeserializeJSON {
     msdyn_solutionid: string;
     msdyn_ismanaged: boolean;
     msdyn_ismanagedname: string;
@@ -57,10 +58,10 @@ export class SolutionComponentSummary {
     msdyn_objectid: string;
     msdyn_description: string;
     msdyn_componenttype: number;
-    msdyn_componenttypename: string;
-    msdyn_componentlogicalname: string;
-    msdyn_total: number;
-    msdyn_statusname: string;
+    msdyn_componenttypename: string | null;
+    msdyn_componentlogicalname: string | null;
+    msdyn_total: number | null;
+    msdyn_statusname: string | null | undefined;
     msdyn_connectorinternalid: string | null;
     msdyn_solutioncomponentsummaryid: string | null;
     msdyn_owner: any;
@@ -103,12 +104,36 @@ export class SolutionComponentSummary {
     msdyn_isauditenabled: false;
     msdyn_isappaware: any;
 
-    constructor() {
+    public equalsNaive(scs: SolutionComponentSummary) {
+        let isEqual = true;
 
+        if (this.msdyn_displayname !== scs.msdyn_displayname
+            || this.msdyn_ismanagedname !== scs.msdyn_ismanagedname
+            || this.msdyn_componenttype !== scs.msdyn_componenttype
+            || this.msdyn_componentlogicalname !== scs.msdyn_componentlogicalname) {
+                
+            isEqual = false;
+        }
+
+        return isEqual;
     }
-}
 
-export async function compare(solution1: SolutionComponentSummary, solution2: SolutionComponentSummary) {
- // show solution diff
- // What exists in solution1, solution2, and both?
+    public equalsComplete(scs: SolutionComponentSummary) {
+        var aProps = Object.getOwnPropertyNames(this);
+        var bProps = Object.getOwnPropertyNames(scs);
+
+        if (aProps.length != bProps.length) {
+            return false;
+        }
+
+        for (var i = 0; i < aProps.length; i++) {
+            var propName = aProps[i];
+
+            if (this[propName] !== scs[propName]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
