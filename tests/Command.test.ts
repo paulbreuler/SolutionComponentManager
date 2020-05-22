@@ -5,15 +5,13 @@ import {
 import { Authentication, PowerAppsConnection } from "../src/Authentication/Authentication";
 import { AuthParams, EnvironmentDetails, AuthParamsPWD } from "../src/Runsettings.development"
 import * as Commands from '../src/Commands'
+import { getTestAccessToken } from './Authentication.test'
 
 describe('Solution Management Tests', function () {
     let access_token: string;
 
     before(async () => {
-        let response: PowerAppsConnection = await Authentication.authenticate(AuthParamsPWD);
-        expect(response.access_token).to.exist
-
-        access_token = response.access_token;
+        access_token = await getTestAccessToken();
     })
 
     it("AddSolutionComponent", async function () {

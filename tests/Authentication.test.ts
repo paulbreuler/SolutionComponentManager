@@ -9,27 +9,18 @@ import { AuthParams, EnvironmentDetails, AuthParamsPWD } from "../src/Runsetting
 describe('PowerApps Authentication Tests', function () {
     let access_token: string;
 
-    before(async () => {
-        let response: PowerAppsConnection = await Authentication.authenticate(AuthParamsPWD);
-        access_token = response.access_token;
-    })
-
-    it("GET /WhoAmI", async function () {
-        this.slow(500);
-        let r = await fetch(`${EnvironmentDetails.org_url}/WhoAmI`,
-            {
-                method: "GET", headers: {
-                    accept: "application/json",
-                    "OData-MaxVersion": "4.0",
-                    "OData-Version": "4.0",
-                    "Content-Type": "application/json; charset=utf-8",
-                    Authorization: `Bearer ${access_token}`
-                }
-            });
-
-        let json = await r.json();
-        expect(json.OrganizationId).to.match(/^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/i, "UUID format required");
+    it("Authenticate to PowerApps | password grant", async function () {
+        access_token = await getTestAccessToken();
     });
 });
 
 
+export async function getTestAccessToken(): Promise<string> {
+    let response: PowerAppsConnection = await Authentication.authenticate(AuthParamsPWD);
+
+    expect(response.token_type).to.equal("Bearer");
+    expect(response.access_token).to.exist;
+    expect(response.refresh_token).to.exist;
+
+    return response.access_token;
+}
