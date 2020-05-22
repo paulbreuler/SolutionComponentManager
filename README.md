@@ -7,14 +7,30 @@ Update the .vscode/launch.json configuration args to test various commands with 
 Add the file `src\RunSettings.development.ts` (This file is ignored, DO NOT commit it to the repo), which is templated in `tests\RunSettings.development.template.ts`. Copy the file to the specified location, then modify the values for your environment. The tool currently does not support adding credentials at runtime.
 
 Make sure to update the import paths to the following
- - `import { IAuthParams, GrantType } from './Authentication/AuthParams'`
- - `import { IEnvironmentDetails } from "./Authentication/EnvironmentDetails"`
+```TypeScript
+import { IAuthParams, GrantType } from './Authentication/AuthParams'
+import { IEnvironmentDetails } from './Authentication/EnvironmentDetails'
+ ```
 
 To run directly build the project and execute from node in terminal.
 
-- `npm run build`
-- `node dist/index.js <argument>`
+``` bash
+npm i
+npm run build
+node dist/index <argument>
+```
 
+Example:
+
+```bash
+node dist/index GetSolutionComponentsSummaries b0367b29-ed8a-ea11-a812-000d3a579ca6
+```
+
+Output:
+```
+[2020-4-22 16:26:37] | INFO: Retrieving components for solution with ID: b0367b29-ed8a-ea11-a812-000d3a579ca6
+[2020-4-22 16:26:38] | INFO: Success - Data written to file: ./output/solComponentSummaries_b0367b29-ed8a-ea11-a812-000d3a579ca6_2020422_162638.json
+```
 ## Live build / debug
 
 Use `npm run build:watch` to track file changes and run the debugger in VS Code.
