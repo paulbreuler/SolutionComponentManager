@@ -3,8 +3,7 @@
 import program from 'commander';
 import * as Commands from "./Commands"
 import chalk from 'chalk'
-import fs from 'fs';
-import os from 'os';
+import * as Helpers from './Utility/Helpers'
 
 class CdsCLI {
     static initialize() {
@@ -43,12 +42,13 @@ class CdsCLI {
             .option("--addRequiredComponents <true|false>", "Indicates whether other solution components that are required by the solution component should also be added to the unmanaged solution.", false)
             .option("--doNotIncludeSubcomponents <true|false>", "Indicates whether the subcomponents should be included.", true)
             .action(async (options) => {
-                console.log(chalk.white.bold(`Attempting to add component to ${options.solutionUniqueName}`));
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Attempting to add component to ${options.solutionUniqueName}`));
                 let response = await Commands.AddSolutionComponent(options.componentId, options.componentType, options.solutionUniqueName, options.addRequiredComponents, options.doNotIncludeSubcomponents);
                 let json = await response.json();
                 if (response.status === 200) {
-                    console.log(`${chalk.greenBright("Success")} | Added component (${options.componentId}) of type ${options.componentType} to ${options.solutionUniqueName} solution`);
-                    console.log(`Solution component ID: ${json.id}`);
+
+                    Helpers.log(Helpers.MessageType.INFO, `${chalk.greenBright("Success")} | Added component (${options.componentId}) of type ${options.componentType} to ${options.solutionUniqueName} solution`);
+                    Helpers.log(Helpers.MessageType.INFO, `Solution component ID: ${json.id}`);
                 }
             });
 
@@ -56,29 +56,39 @@ class CdsCLI {
             .arguments('<solution_unique_name>')
             .description('Get solution component(s) from a solution')
             .action(async (solutionName) => {
-                console.log(chalk.white.bold(`Retrieving components for solution: ${solutionName}`));
-                let solutioncomponentCollection = await Commands.GetSolutionComponents(solutionName);
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Retrieving components for solution: ${solutionName}`));
 
+                let solutioncomponentCollection = await Commands.GetSolutionComponents(solutionName);
                 let data: string = JSON.stringify(solutioncomponentCollection);
 
-                let dir = "./output";
-                if (!fs.existsSync(dir)) {
-                    fs.mkdirSync(dir);
-                }
-            
-                let file: string = `${dir}/solutionComponents.json`;
-                fs.writeFile(file, data, (err) => {
-                    if (err) throw err;
-                    console.log(`${chalk.greenBright("Success")} | Data written to file: ${file}`);
-                });
+                Helpers.writeToFile(data, `solutionComponents_${solutionName}.json`)
             })
             .on('--help', function () {
                 console.log('');
                 console.log('Examples:');
                 console.log('');
-                console.log('  $ deploy GetSolutionComponents <solution unique name>');
+                console.log('  $ deploy GetSolutionComponents <solution_unique_name>');
                 console.log('  $ deploy GetSolutionComponents mySolution');
-            });;
+            });
+
+        program.command("GetSolutionComponentsSummaries")
+            .arguments('<solution_id>')
+            .description('Get summarized solution component(s) from a solution')
+            .action(async (solutionId: string) => {
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Retrieving components for solution with ID: ${solutionId}`));
+
+                let solutionComponentCollection = await Commands.GetSolutionComponentsSummaries(solutionId);
+                let data: string = JSON.stringify(solutionComponentCollection);
+
+                Helpers.writeToFile(data, `solutionComponentSummaries_${solutionId}.json`);
+            })
+            .on('--help', function () {
+                console.log('');
+                console.log('Examples:');
+                console.log('');
+                console.log('  $ deploy GetSolutionComponentsSummaries <solution_id>');
+                console.log('  $ deploy GetSolutionComponentsSummaries b0367b29-ed8a-ea11-a812-000d3a579ca6');
+            });
 
         program.parse(process.argv)
     }

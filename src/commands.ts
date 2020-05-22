@@ -3,7 +3,7 @@ import { Authentication } from "./Authentication/Authentication"
 import { EnvironmentDetails, AuthParamsPWD } from './RunSettings.development'
 import fetch from 'node-fetch'
 import { ComponentTypes } from "./componentTypes"
-import { SolutionComponent } from './SolutionManagement/Solution'
+import { SolutionComponent, SolutionComponentSummary } from './SolutionManagement/Solution'
 
 export const WhoAmI = async () => {
     let access_token: string;
@@ -79,7 +79,41 @@ export async function AddSolutionComponent(componentId: string, componentType: n
 }
 
 /**
- * Generates a collection of components with relevant data based on solutioncomponents api call
+ * Run undocumented function that returns full summary of each component in a solution. 
+ * Includes displayname, objectid, type name, type code, component logical name (For subsequent API calls)
+ * @param solutionID 
+ * @returns Array of solution components.
+ */
+export async function GetSolutionComponentsSummaries(solutionID) {
+    let access_token: string;
+
+    let authResponse: any = await Authentication.authenticate(AuthParamsPWD);
+    let authJson = await authResponse.json();
+    access_token = authJson.access_token;
+    let response = await fetch(`${EnvironmentDetails.org_url}/msdyn_solutioncomponentsummaries?$filter=(msdyn_solutionid eq ${solutionID})`,
+        {
+            method: "GET", headers: {
+                accept: "application/json",
+                "OData-MaxVersion": "4.0",
+                "OData-Version": "4.0",
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${access_token}`
+            }
+        });
+
+    let json = await response.json();
+
+    let componentSummaryCollection = Array<SolutionComponentSummary>();
+    json.value.forEach(component => {
+        let scs: SolutionComponentSummary = component;
+        componentSummaryCollection.push(scs);
+    });
+
+    return componentSummaryCollection;
+}
+
+/**
+ * Generates a collection of components with relevant data based on documented solutioncomponents api call
  * @param solutionName Name of solution
  */
 export async function GetSolutionComponents(solutionName): Promise<SolutionComponent[]> {

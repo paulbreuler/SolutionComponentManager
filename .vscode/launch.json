@@ -41,6 +41,16 @@
             ],
             "program": "${workspaceFolder}/dist/index.js",
             "args": ["GetSolutionComponents", "core"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "GetSolutionComponentsSummaries",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/dist/index.js",
+            "args": ["GetSolutionComponentsSummaries", "b0367b29-ed8a-ea11-a812-000d3a579ca6"]
         }
     ]
 }

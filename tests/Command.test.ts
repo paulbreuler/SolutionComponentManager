@@ -34,6 +34,14 @@ describe('Solution Management Tests', function () {
 
         expect(componentCollection.length).to.be.greaterThan(0);
     });
+
+    it("GetSolutionComponentsSummary", async function () {
+        this.slow(10000);
+
+        let componentCollection = await Commands.GetSolutionComponentsSummaries("b0367b29-ed8a-ea11-a812-000d3a579ca6");
+
+        expect(componentCollection.length).to.be.greaterThan(0);
+    });
 });
 
 
