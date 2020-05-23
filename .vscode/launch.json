@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests",
+            "name": "Mocha Tests - All",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
                 "--timeout",
@@ -16,6 +16,24 @@
                 "-r",
                 "ts-node/register",
                 "${workspaceFolder}/tests/**/*.test.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Tests - Heap",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "-r",
+                "ts-node/register",
+                "${workspaceFolder}/tests/**/Heap.test.ts"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "skipFiles": [

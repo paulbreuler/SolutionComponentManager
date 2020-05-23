@@ -1,5 +1,6 @@
 import { ComponentTypes } from "../componentTypes"
 import { DeserializeJSON } from "../Utility/Helpers";
+import { IHeapItem } from "../Utility/Heap";
 
 export class SolutionComponent {
     // Default 
@@ -104,6 +105,22 @@ export class SolutionComponentSummary extends DeserializeJSON {
     msdyn_isauditenabled: false;
     msdyn_isappaware: any;
 
+    HeapIndex: number;
+
+    public compare(scs: SolutionComponentSummary) {
+
+        if (!scs)
+            return 0;
+
+        if (this.msdyn_componenttype > scs.msdyn_componenttype) {
+            return -1;
+        } else if (this.msdyn_componenttype === scs.msdyn_componenttype) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
     public equalsNaive(scs: SolutionComponentSummary) {
         let isEqual = true;
 
@@ -111,7 +128,7 @@ export class SolutionComponentSummary extends DeserializeJSON {
             || this.msdyn_ismanagedname !== scs.msdyn_ismanagedname
             || this.msdyn_componenttype !== scs.msdyn_componenttype
             || this.msdyn_componentlogicalname !== scs.msdyn_componentlogicalname) {
-                
+
             isEqual = false;
         }
 
