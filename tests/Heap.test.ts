@@ -68,6 +68,10 @@ describe('Heap Tests', function () {
             expect(scsHeap.peek().msdyn_componenttype).to.eq(60);
         });
 
+        it("Clear", async function () {
+            scsHeap.clear();
+            expect(scsHeap.size).to.eq(0);
+        });
     });
 });
 

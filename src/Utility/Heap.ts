@@ -108,7 +108,7 @@ export class Heap<T extends IHeapItem<T>>  {
         }
     }
 
-    public Swap(itemA: T, itemB: T) {
+    private Swap(itemA: T, itemB: T) {
         this._items[itemA.HeapIndex] = itemB;
         this._items[itemB.HeapIndex] = itemA;
         let itemAIndex: number = itemA.HeapIndex;
