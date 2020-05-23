@@ -8,34 +8,66 @@ import * as Helpers from '../src/Utility/Helpers'
 
 describe('Heap Tests', function () {
 
-    it("Empty Heap", async function () {
-        let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+    describe("Empty Heap Test", function () {
+        it("Initialize", async function () {
+            let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+        });
+
+        it("Size", async function () {
+            let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+            expect(scsHeap.size).to.equal(0);
+        });
+
+        it("Is empty", async function () {
+            let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+            expect(scsHeap.isEmpty).to.be.true;
+        });
+
+        it("Peek", async function () {
+            let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+            expect(scsHeap.peek()).to.be.undefined;
+        });
     });
 
-    it("Empty Heap size", async function () {
+    describe("Populated Heap Test", function () {
         let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
-        expect(scsHeap.size()).to.equal(0);
-    });
+        it("Add to heap", async function () {
 
-    it("Empty Heap peek", async function () {
-        let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
-        expect(scsHeap.peek()).to.be.undefined;
-    });
+            let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
 
-    it("Add to heap", async function () {
-        let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+            contents.forEach((element: any) => {
+                let scs: SolutionComponentSummary = new SolutionComponentSummary();
 
-        let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
+                scs.deserializeFromJson(element);
+                scsHeap.Add(scs);
+            })
 
-        contents.forEach((element: any) => {
-            let scs: SolutionComponentSummary = new SolutionComponentSummary();
+            expect((scsHeap.peek()).msdyn_componenttype).to.equal(1);
+            expect(scsHeap.size).to.equal(4);
+        });
 
-            scs.deserializeFromJson(element);
-            scsHeap.Add(scs);
-        })
+        it("Is not empty", async function () {
+            expect(scsHeap.isEmpty).to.be.false;
+        });
 
-        expect((scsHeap.peek()).msdyn_componenttype).to.equal(1);
-        expect(scsHeap.size()).to.equal(4);
+        it("Remote First", async function () {
+            let first: SolutionComponentSummary = scsHeap.RemoveFirst();
+            expect(first.msdyn_componenttype).to.eq(1);
+            expect(scsHeap.size).to.eq(3);
+        });
+
+        it("Remote Third", async function () {
+            let second: SolutionComponentSummary = scsHeap.RemoveFirst();
+            expect(second.msdyn_componenttype).to.eq(1);
+            let third: SolutionComponentSummary = scsHeap.RemoveFirst();
+            expect(third.msdyn_componenttype).to.eq(50);
+            expect(scsHeap.size).to.eq(1);
+        });
+
+        it("Peek last", async function () {
+            expect(scsHeap.peek().msdyn_componenttype).to.eq(60);
+        });
+
     });
 });
 

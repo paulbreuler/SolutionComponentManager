@@ -107,7 +107,7 @@ export class SolutionComponentSummary extends DeserializeJSON {
 
     HeapIndex: number;
 
-    public compare(scs: SolutionComponentSummary) {
+    public compareTo(scs: SolutionComponentSummary) {
 
         if (!scs)
             return 0;
@@ -121,7 +121,7 @@ export class SolutionComponentSummary extends DeserializeJSON {
         }
     }
 
-    public equalsNaive(scs: SolutionComponentSummary) {
+    public equals(scs: SolutionComponentSummary) {
         let isEqual = true;
 
         if (this.msdyn_displayname !== scs.msdyn_displayname
@@ -135,7 +135,7 @@ export class SolutionComponentSummary extends DeserializeJSON {
         return isEqual;
     }
 
-    public equalsComplete(scs: SolutionComponentSummary) {
+    public exactMatch(scs: SolutionComponentSummary) {
         var aProps = Object.getOwnPropertyNames(this);
         var bProps = Object.getOwnPropertyNames(scs);
 
