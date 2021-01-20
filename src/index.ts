@@ -73,7 +73,7 @@ class CdsCLI {
 
         program.command("GetSolutionComponentsSummaries")
             .arguments('<solution_id>')
-            .description('Get summarized solution component(s) from a solution')
+            .description(`Get summarized solution component(s) from a solution. Output serialized to ${Helpers.oututDirectory}`)
             .action(async (solutionId: string) => {
                 Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Retrieving components for solution with ID: ${solutionId}`));
 

@@ -2,13 +2,14 @@ import fs from 'fs';
 import os from 'os';
 import chalk from 'chalk'
 
+export const oututDirectory = "./output";
+
 export async function writeToFile(data: string, fileName: string) {
-    let dir = "./output";
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
+    if (!fs.existsSync(oututDirectory)) {
+        fs.mkdirSync(oututDirectory);
     }
 
-    let file: string = `${dir}/${fileName}`;
+    let file: string = `${oututDirectory}/${fileName}`;
     fs.writeFile(file, data, (err) => {
         if (err) throw err;
         log(MessageType.INFO, `${chalk.greenBright("Success")} - Data written to file: ${file}`);
