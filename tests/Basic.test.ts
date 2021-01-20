@@ -7,21 +7,6 @@ import { EnvironmentDetails } from "../src/Runsettings.development"
 import { getTestAccessToken } from './Authentication.test'
 import * as Helpers from '../src/Utility/Helpers'
 
-module Automobile {
-    export class Car {
-        id: string;
-        make: string;
-        model: string;
-        year: number;
-        owner: Owner;
-    }
-
-    export class Owner {
-        name: string;
-    }
-}
-
-
 describe('PowerApps Basic Tests', function () {
     let access_token: string;
 
