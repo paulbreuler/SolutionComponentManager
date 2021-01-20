@@ -45,11 +45,13 @@ export class Heap<T extends IHeapItem<T>>  {
         this._currentItemCount--;
 
         // Take last item and make it first
-        this._items.unshift(this._items.pop());
-        this._items[0].HeapIndex = 0;
+        if (this._items.length > 0) {
+            this._items.unshift(this._items.pop());
+            this._items[0].HeapIndex = 0;
 
-        // Sort item down to maintain order
-        this.SortDown(this._items[0]);
+            // Sort item down to maintain order
+            this.SortDown(this._items[0]);
+        }
 
         return firstItem;
     }

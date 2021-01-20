@@ -72,6 +72,27 @@ describe('Heap Tests', function () {
             scsHeap.clear();
             expect(scsHeap.size).to.eq(0);
         });
+
+        it("Drain heap", async function () {
+
+            let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
+
+            contents.forEach((element: any) => {
+                let scs: SolutionComponentSummary = new SolutionComponentSummary();
+
+                scs.deserializeFromJson(element);
+                scsHeap.Add(scs);
+            })
+
+            expect((scsHeap.peek()).msdyn_componenttype).to.equal(1);
+            expect(scsHeap.size).to.equal(4);
+
+            while (scsHeap.size > 0){
+                scsHeap.RemoveFirst();
+            }
+
+            expect(scsHeap.size).to.equal(0);
+        });
     });
 });
 

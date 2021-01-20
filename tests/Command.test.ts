@@ -6,6 +6,7 @@ import * as Commands from '../src/Commands';
 import { getTestAccessToken } from './Authentication.test';
 import * as Helpers from '../src/Utility/Helpers';
 import { SolutionComponentSummary } from '../src/SolutionManagement/Solution';
+import { Heap } from '../src/Utility/Heap'
 
 describe('Solution Management Tests', function () {
     let access_token: string;
@@ -50,9 +51,9 @@ describe('Solution Management Tests', function () {
 
     });
 
-    it("Compare solution summaries", async function () {
+    it("Compare solution summaries (Not Equal)", async function () {
 
-        let scsCollection: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+        let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
 
         let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
 
@@ -60,10 +61,10 @@ describe('Solution Management Tests', function () {
             let scs: SolutionComponentSummary = new SolutionComponentSummary();
 
             scs.deserializeFromJson(element);
-            scsCollection.push(scs);
+            scsHeap.Add(scs);
         })
 
-        let scsCollection_2: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+        let scsHeap_2: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
 
         let contents_2: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_B.json`);
 
@@ -71,27 +72,65 @@ describe('Solution Management Tests', function () {
             let scs: SolutionComponentSummary = new SolutionComponentSummary();
 
             scs.deserializeFromJson(element);
-            scsCollection_2.push(scs);
+            scsHeap_2.Add(scs);
         })
 
         let isEqual = true;
-        for (let i = 0; i < scsCollection.length; i++) {
-            for (let j = 0; i < scsCollection_2.length; j++) {
-                isEqual = scsCollection[i].equals(scsCollection_2[j]);
-                if (isEqual === false)
-                    break;
-            }
-            if (isEqual === false)
+        while (scsHeap.size > 0 && scsHeap_2.size > 0) {
+            let scsheap_item = scsHeap.RemoveFirst();
+            let scsheap_2_item = scsHeap_2.RemoveFirst();
+
+            if (!scsheap_item.equals(scsheap_2_item)) {
+                isEqual = false;
                 break;
+            }
         }
-        
+
         expect(isEqual).to.be.false;
+    });
+
+    it("Compare solution summaries (Equal)", async function () {
+
+        let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+
+        let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
+
+        contents.forEach((element: any) => {
+            let scs: SolutionComponentSummary = new SolutionComponentSummary();
+
+            scs.deserializeFromJson(element);
+            scsHeap.Add(scs);
+        })
+
+        let scsHeap_2: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+
+        let contents_2: any =await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
+
+        contents_2.forEach((element: any) => {
+            let scs: SolutionComponentSummary = new SolutionComponentSummary();
+
+            scs.deserializeFromJson(element);
+            scsHeap_2.Add(scs);
+        })
+
+        let isEqual = true;
+        while (scsHeap.size > 0 && scsHeap_2.size > 0) {
+            let scsheap_item = scsHeap.RemoveFirst();
+            let scsheap_2_item = scsHeap_2.RemoveFirst();
+
+            if (!scsheap_item.equals(scsheap_2_item)) {
+                isEqual = false;
+                break;
+            }
+        }
+
+        expect(isEqual).to.be.true;
     });
 
     // More efficient but an undocumented feature
     it("GetSolutionComponentsSummary", async function () {
         this.slow(2000);
-        
+
         // Replace with valid solution ID
         let componentCollection = await Commands.GetSolutionComponentsSummaries("496c3d5b-7b5a-eb11-a812-000d3a8c9261");
 

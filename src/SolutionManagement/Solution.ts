@@ -108,15 +108,21 @@ export class SolutionComponentSummary extends DeserializeJSON {
 
     HeapIndex: number;
 
+    /**
+     * Return -1 is component type is greater
+     * Return msdyn_name localCompare if equal
+     * Return 1 if less than
+     * @param scs 
+     */
     public compareTo(scs: SolutionComponentSummary) {
 
         if (!scs)
-            return -1;
+            return 0;
 
         if (this.msdyn_componenttype > scs.msdyn_componenttype) {
             return -1;
         } else if (this.msdyn_componenttype === scs.msdyn_componenttype) {
-            return 0;
+            return this.msdyn_name.localeCompare(scs.msdyn_name);
         } else {
             return 1;
         }
