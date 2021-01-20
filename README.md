@@ -1,5 +1,7 @@
 # SolutionComponentManager
 
+![CDS Assistant CLI](./readmeResources/CLI-Screenshot.png)
+
 ## How to use (Important!)
 
 Update the .vscode/launch.json configuration args to test various commands with debugging enabled.
