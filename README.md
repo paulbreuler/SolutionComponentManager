@@ -37,7 +37,7 @@ Output:
 
 Compare two solution summaries example:
 ```bash
-node dist/index CompareSolutionSummaries --solutionPath "./output/solComponentSummaries_65f50035-1568-4fe3-8c91-23029097202d_2021019_232642.json"  --solutionPath2 "./output/solComponentSummaries_496c3d5b-7b5a-eb11-a812-000d3a8c9261_2021019_232456.json"
+node dist/index CompareSolutionSummaries --solutionPathA 'output\solComponentSummaries_65f50035-1568-4fe3-8c91-23029097202d_2021019_232642.json' --solutionPathB 'output\solComponentSummaries_496c3d5b-7b5a-eb11-a812-000d3a8c9261_2021019_225254.json' --outputAsTable true
 ```
 
 Output:
