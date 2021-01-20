@@ -90,6 +90,16 @@ class CdsCLI {
                 console.log('  $ deploy GetSolutionComponentsSummaries b0367b29-ed8a-ea11-a812-000d3a579ca6');
             });
 
+            program.command("CompareSolutionSummaries")
+            .description('Compare two solution component summaries')
+            .requiredOption("--solutionPath <path_to_solution1>", "REQUIRED | Path to first solution")
+            .requiredOption("--solutionPath2 <path_to_solution2>", "REQUIRED | Path to second solution")                        
+            .action(async (options) => {
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparing solution ${options.solutionPath} to solution ${options.solutionPath2} `));
+                let response = await Commands.CompareSolutionSummaries(options.solutionPath, options.solutionPath2);
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparison Result: ${response}`));
+            });
+
         program.parse(process.argv)
     }
 }

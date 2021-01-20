@@ -4,6 +4,8 @@ import { EnvironmentDetails, AuthParamsPWD } from './RunSettings.development'
 import fetch from 'node-fetch'
 import { ComponentTypes } from "./componentTypes"
 import { SolutionComponent, SolutionComponentSummary } from './SolutionManagement/Solution'
+import { Heap } from './Utility/Heap'
+import * as Helpers from './Utility/Helpers';
 
 export const WhoAmI = async () => {
     let response: PowerAppsConnection = await Authentication.authenticate(AuthParamsPWD);
@@ -95,6 +97,45 @@ export async function GetSolutionComponentsSummaries(solutionID: string) {
 
     return componentSummaryCollection;
 }
+
+export async function CompareSolutionSummaries(solutionPath: string, solutionPath2: string) {
+    let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+
+    let contents: any = await Helpers.jsonFromFile(solutionPath);
+    // `${process.cwd()}/tests/resources/solComponentSummaries_A.json`
+
+    contents.forEach((element: any) => {
+        let scs: SolutionComponentSummary = new SolutionComponentSummary();
+
+        scs.deserializeFromJson(element);
+        scsHeap.Add(scs);
+    })
+
+    let scsHeap_2: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+
+    let contents_2: any = await Helpers.jsonFromFile(solutionPath2);
+
+    contents_2.forEach((element: any) => {
+        let scs: SolutionComponentSummary = new SolutionComponentSummary();
+
+        scs.deserializeFromJson(element);
+        scsHeap_2.Add(scs);
+    })
+
+    let isEqual = true;
+    while (scsHeap.size > 0 && scsHeap_2.size > 0) {
+        let scsheap_item = scsHeap.RemoveFirst();
+        let scsheap_2_item = scsHeap_2.RemoveFirst();
+
+        if (!scsheap_item.equals(scsheap_2_item)) {
+            isEqual = false;
+            break;
+        }
+    }
+
+    return isEqual;
+}
+
 
 /**
  * Generates a collection of components with relevant data based on documented solutioncomponents api call

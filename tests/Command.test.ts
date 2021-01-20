@@ -38,7 +38,7 @@ describe('Solution Management Tests', function () {
 
     it("Read solution summary from file", async function () {
 
-        let scsCollection: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+        let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
 
         let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
 
@@ -46,83 +46,21 @@ describe('Solution Management Tests', function () {
             let scs: SolutionComponentSummary = new SolutionComponentSummary();
 
             scs.deserializeFromJson(element);
-            scsCollection.push(scs);
+            scsHeap.Add(scs);
         })
 
     });
 
     it("Compare solution summaries (Not Equal)", async function () {
 
-        let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
-
-        let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
-
-        contents.forEach((element: any) => {
-            let scs: SolutionComponentSummary = new SolutionComponentSummary();
-
-            scs.deserializeFromJson(element);
-            scsHeap.Add(scs);
-        })
-
-        let scsHeap_2: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
-
-        let contents_2: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_B.json`);
-
-        contents_2.forEach((element: any) => {
-            let scs: SolutionComponentSummary = new SolutionComponentSummary();
-
-            scs.deserializeFromJson(element);
-            scsHeap_2.Add(scs);
-        })
-
-        let isEqual = true;
-        while (scsHeap.size > 0 && scsHeap_2.size > 0) {
-            let scsheap_item = scsHeap.RemoveFirst();
-            let scsheap_2_item = scsHeap_2.RemoveFirst();
-
-            if (!scsheap_item.equals(scsheap_2_item)) {
-                isEqual = false;
-                break;
-            }
-        }
+        let isEqual = await Commands.CompareSolutionSummaries(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`, `${process.cwd()}/tests/resources/solComponentSummaries_B.json`);
 
         expect(isEqual).to.be.false;
     });
 
     it("Compare solution summaries (Equal)", async function () {
 
-        let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
-
-        let contents: any = await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
-
-        contents.forEach((element: any) => {
-            let scs: SolutionComponentSummary = new SolutionComponentSummary();
-
-            scs.deserializeFromJson(element);
-            scsHeap.Add(scs);
-        })
-
-        let scsHeap_2: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
-
-        let contents_2: any =await Helpers.jsonFromFile(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
-
-        contents_2.forEach((element: any) => {
-            let scs: SolutionComponentSummary = new SolutionComponentSummary();
-
-            scs.deserializeFromJson(element);
-            scsHeap_2.Add(scs);
-        })
-
-        let isEqual = true;
-        while (scsHeap.size > 0 && scsHeap_2.size > 0) {
-            let scsheap_item = scsHeap.RemoveFirst();
-            let scsheap_2_item = scsHeap_2.RemoveFirst();
-
-            if (!scsheap_item.equals(scsheap_2_item)) {
-                isEqual = false;
-                break;
-            }
-        }
+        let isEqual = await Commands.CompareSolutionSummaries(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`, `${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
 
         expect(isEqual).to.be.true;
     });
