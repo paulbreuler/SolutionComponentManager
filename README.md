@@ -42,8 +42,22 @@ node dist/index CompareSolutionSummaries --solutionPath "./output/solComponentSu
 
 Output:
 ```
-[2021-0-19 23:27:15] | INFO: Comparing solution ./output/solComponentSummaries_65f50035-1568-4fe3-8c91-23029097202d_2021019_232642.json to solution ./output/solComponentSummaries_496c3d5b-7b5a-eb11-a812-000d3a8c9261_2021019_232456.json
-[2021-0-19 23:27:15] | INFO: Comparison Result: false
+[2021-0-20 17:25:18] | INFO: Comparing solution output\solComponentSummaries_65f50035-1568-4fe3-8c91-23029097202d_2021019_232642.json to solution output\solComponentSummaries_496c3d5b-7b5a-eb11-a812-000d3a8c9261_2021019_225254.json
+[2021-0-20 17:25:18] | INFO: Comparison Result: false
+[2021-0-20 17:25:18] | INFO: There are 3 unique result(s) From solutionPathA: [{"componentType":62,"displayName":"CRM Hub","uniqueName":"CRMHub","isManaged":true},{"componentType":80,"displayName":"CRM Hub","uniqueName":"CRMHub","isManaged":true},{"componentType":61,"displayName":"Legacy_Crm_Icon.png","uniqueName":"msdyn_/Images/Legacy_Crm_Icon.png","isManaged":true}]
+[2021-0-20 17:25:18] | INFO: There are 1 unique result(s) From solutionPathB: [{"componentType":1,"displayName":"Account","uniqueName":"account","isManaged":true}]
+[2021-0-20 17:25:18] | INFO:
+┌──────────┬───────────────┬─────────────────────┬───────────────────────────────────┬───────────┐
+│ Solution │ componentType │ displayName         │ uniqueName                        │ isManaged │
+├──────────┼───────────────┼─────────────────────┼───────────────────────────────────┼───────────┤
+│ A        │ 62            │ CRM Hub             │ CRMHub                            │ true      │
+├──────────┼───────────────┼─────────────────────┼───────────────────────────────────┼───────────┤
+│ A        │ 80            │ CRM Hub             │ CRMHub                            │ true      │
+├──────────┼───────────────┼─────────────────────┼───────────────────────────────────┼───────────┤
+│ A        │ 61            │ Legacy_Crm_Icon.png │ msdyn_/Images/Legacy_Crm_Icon.png │ true      │
+├──────────┼───────────────┼─────────────────────┼───────────────────────────────────┼───────────┤
+│ B        │ 1             │ Account             │ account                           │ true      │
+└──────────┴───────────────┴─────────────────────┴───────────────────────────────────┴───────────┘
 ```
 
 ## Live build / debug
