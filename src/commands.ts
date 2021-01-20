@@ -101,12 +101,11 @@ export async function GetSolutionComponentsSummaries(solutionID: string) {
 
 export interface ISolutionCompareResponse {
     isEqual: boolean;
-    diffSolutionPath: Array<SolutionComponentSummary>;
-    diffSolutionPath2: Array<SolutionComponentSummary>;
-    intersectItems: Array<SolutionComponentSummary>;
+    diffSolutionPath: Array<string>;
+    diffSolutionPath2: Array<string>;
 }
 
-export async function CompareSolutionSummaries(solutionPath: string, solutionPath2: string) {
+export async function CompareSolutionSummaries(solutionPath: string, solutionPath2: string): Promise<ISolutionCompareResponse> {
     let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
 
     let contents: any = await Helpers.jsonFromFile(solutionPath);
@@ -130,36 +129,33 @@ export async function CompareSolutionSummaries(solutionPath: string, solutionPat
         scsHeap_2.Add(scs);
     })
 
-    // let intersectItems: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
-    // let diffItemsA: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
-    // let diffItemsB: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
-
     let result = true;
-    // while (scsHeap.size > 0 && scsHeap_2.size > 0) {
-    //     let scsheap_item = scsHeap.RemoveFirst();
-    //     let scsheap_2_item = scsHeap_2.RemoveFirst();
-
-    //     if (!scsheap_item.equals(scsheap_2_item)) {
-    //         result = false;
-    //         diffItemsA.push(scsheap_item)
-    //         diffItemsB.push(scsheap_2_item);
-    //     } else {
-    //         intersectItems.push(scsheap_item);
-    //     }
-    // }
-
-    let a = scsHeap.toArray().map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name }))});
-    let b = scsHeap_2.toArray().map((item) => {return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name }))});
+    let a = scsHeap.toArray().map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name })) });
+    let b = scsHeap_2.toArray().map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name })) });
 
     if (a.length !== b.length) result = false;
     const uniqueValues = new Set([...a, ...b]);
+    let diffA: Array<string> = new Array<string>();
+    let diffB: Array<string> = new Array<string>();
     for (const v of uniqueValues) {
-        const aCount = a.filter(e => e === v).length;
-        const bCount = b.filter(e => e === v).length;
-        if (aCount !== bCount) result = false;
+        const aUnique: Array<string> = a.filter(e => e === v);
+        const bUnique: Array<string> = b.filter(e => e === v);
+        const aCount = aUnique.length;
+        const bCount = bUnique.length;
+        if (aCount !== bCount) {
+            diffA = diffA.concat(aUnique);
+            diffB = diffB.concat(bUnique);
+            result = false;
+        }
     }
 
-    return result;
+    let respone: ISolutionCompareResponse = {
+        isEqual: result,
+        diffSolutionPath: diffA,
+        diffSolutionPath2: diffB,
+    }
+
+    return respone;
 }
 
 /**
