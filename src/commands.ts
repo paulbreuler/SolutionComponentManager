@@ -101,48 +101,56 @@ export async function GetSolutionComponentsSummaries(solutionID: string) {
 
 export interface ISolutionCompareResponse {
     isEqual: boolean;
-    diffSolutionPath: Array<string>;
-    diffSolutionPath2: Array<string>;
+    uniqueFromPathA: Array<string>;
+    uniqueFromPathB: Array<string>;
 }
 
-export async function CompareSolutionSummaries(solutionPath: string, solutionPath2: string): Promise<ISolutionCompareResponse> {
-    let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+/**
+ * Compares solution components from two given solutions from file @pathA and @pathB based on their msdyn_objecttypecode, msdyn_displayname, and msdyn_name
+ * @param pathA 
+ * @param pathB 
+ * 
+ * retruns Object of type ISolutionCompareResponse
+ */
+export async function CompareSolutionSummaries(pathA: string, pathB: string): Promise<ISolutionCompareResponse> {
+    let scsCollection_A: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
 
-    let contents: any = await Helpers.jsonFromFile(solutionPath);
+    let contents_A: any = await Helpers.jsonFromFile(pathA);
     // `${process.cwd()}/tests/resources/solComponentSummaries_A.json`
 
-    contents.forEach((element: any) => {
+    contents_A.forEach((element: any) => {
         let scs: SolutionComponentSummary = new SolutionComponentSummary();
 
         scs.deserializeFromJson(element);
-        scsHeap.Add(scs);
+        scsCollection_A.push(scs);
     })
 
-    let scsHeap_2: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+    let scsCollection_B: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
 
-    let contents_2: any = await Helpers.jsonFromFile(solutionPath2);
+    let contents_B: any = await Helpers.jsonFromFile(pathB);
 
-    contents_2.forEach((element: any) => {
+    contents_B.forEach((element: any) => {
         let scs: SolutionComponentSummary = new SolutionComponentSummary();
 
         scs.deserializeFromJson(element);
-        scsHeap_2.Add(scs);
+        scsCollection_B.push(scs);
     })
 
     let result = true;
-    let a = scsHeap.toArray().map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name })) });
-    let b = scsHeap_2.toArray().map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name })) });
+    // ObjectTypeCode might cause a conflict with solutions from different orgs
+    let a = scsCollection_A.map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name })) });
+    let b = scsCollection_B.map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name })) });
 
     if (a.length !== b.length) result = false;
+
     const uniqueValues = new Set([...a, ...b]);
     let diffA: Array<string> = new Array<string>();
     let diffB: Array<string> = new Array<string>();
+
     for (const v of uniqueValues) {
         const aUnique: Array<string> = a.filter(e => e === v);
         const bUnique: Array<string> = b.filter(e => e === v);
-        const aCount = aUnique.length;
-        const bCount = bUnique.length;
-        if (aCount !== bCount) {
+        if (aUnique.length !== bUnique.length) {
             diffA = diffA.concat(aUnique);
             diffB = diffB.concat(bUnique);
             result = false;
@@ -151,8 +159,8 @@ export async function CompareSolutionSummaries(solutionPath: string, solutionPat
 
     let respone: ISolutionCompareResponse = {
         isEqual: result,
-        diffSolutionPath: diffA,
-        diffSolutionPath2: diffB,
+        uniqueFromPathA: diffA,
+        uniqueFromPathB: diffB,
     }
 
     return respone;
