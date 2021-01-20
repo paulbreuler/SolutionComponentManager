@@ -105,7 +105,6 @@ class CdsCLI {
                 Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`There are ${response.uniqueFromPathB.length} unique result(s) From solutionPathB: ${response.uniqueFromPathB}`));
                 if (options.outputAsTable)
                     OutputTable(response);
-
             });
 
         program.parse(process.argv)
@@ -113,10 +112,9 @@ class CdsCLI {
 }
 
 // TODO make keys headers to make this more generic.
-function OutputTable(input) {
+function OutputTable(input: Commands.ISolutionCompareResponse) {
     var table = new Table({
-        head: ['Solution', 'ObjectTypeCode', 'Display Name', 'Unique Name'],
-        colWidths: [10, 16, 35, 35],
+        head: ["Solution"].concat(Object.keys(input.uniqueFromPathA[0])),
         style: {
             head: []    //disable colors in header cells
             , border: []  //disable colors for the border
@@ -124,13 +122,11 @@ function OutputTable(input) {
     });
 
     input.uniqueFromPathA.forEach((e) => {
-        let o = JSON.parse(e);
-        table.push(["a", o.objectTypeCode, o.displayName, o.uniqueName]);
+        table.push(["A"].concat(Object.values(e)));
     })
 
     input.uniqueFromPathB.forEach((e) => {
-        let o = JSON.parse(e);
-        table.push(["b", o.objectTypeCode, o.displayName, o.uniqueName]);
+        table.push(["B"].concat(Object.values(e)));
     })
 
     Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`\n${table.toString()}`));

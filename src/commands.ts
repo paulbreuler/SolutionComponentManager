@@ -101,8 +101,15 @@ export async function GetSolutionComponentsSummaries(solutionID: string) {
 
 export interface ISolutionCompareResponse {
     isEqual: boolean;
-    uniqueFromPathA: Array<string>;
-    uniqueFromPathB: Array<string>;
+    uniqueFromPathA: Array<IMinComponentCompare>;
+    uniqueFromPathB: Array<IMinComponentCompare>;
+}
+
+export interface IMinComponentCompare {
+    componentType: number;
+    displayName: string;
+    uniqueName: string;
+    isManaged: boolean;
 }
 
 /**
@@ -138,8 +145,8 @@ export async function CompareSolutionSummaries(pathA: string, pathB: string): Pr
 
     let result = true;
     // ObjectTypeCode might cause a conflict with solutions from different orgs
-    let a = scsCollection_A.map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name })) });
-    let b = scsCollection_B.map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name })) });
+    let a = scsCollection_A.map((item) => { return (JSON.stringify(<IMinComponentCompare>{ componentType: item.msdyn_componenttype, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name, isManaged: item.msdyn_ismanaged })) });
+    let b = scsCollection_B.map((item) => { return (JSON.stringify(<IMinComponentCompare>{ componentType: item.msdyn_componenttype, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name, isManaged: item.msdyn_ismanaged })) });
 
     if (a.length !== b.length) result = false;
 
@@ -159,8 +166,8 @@ export async function CompareSolutionSummaries(pathA: string, pathB: string): Pr
 
     let respone: ISolutionCompareResponse = {
         isEqual: result,
-        uniqueFromPathA: diffA,
-        uniqueFromPathB: diffB,
+        uniqueFromPathA: diffA.map((item) => { return (<IMinComponentCompare>JSON.parse(item)) }),
+        uniqueFromPathB: diffB.map((item) => { return (<IMinComponentCompare>JSON.parse(item)) }),
     }
 
     return respone;
