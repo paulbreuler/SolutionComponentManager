@@ -104,6 +104,7 @@ export class SolutionComponentSummary extends DeserializeJSON {
     msdyn_typename: string;
     msdyn_isauditenabled: false;
     msdyn_isappaware: any;
+    msdyn_canvasappuniqueid: any;
 
     HeapIndex: number;
 
