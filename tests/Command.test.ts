@@ -55,14 +55,14 @@ describe('Solution Management Tests', function () {
 
         let response = await Commands.CompareSolutionSummaries(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`, `${process.cwd()}/tests/resources/solComponentSummaries_B.json`);
 
-        expect(response.isEqual).to.be.false;
+        expect(response).to.be.false;
     });
 
     it("Compare solution summaries (Equal)", async function () {
 
         let response = await Commands.CompareSolutionSummaries(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`, `${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
 
-        expect(response.isEqual).to.be.true;
+        expect(response).to.be.true;
     });
 
     // More efficient but an undocumented feature

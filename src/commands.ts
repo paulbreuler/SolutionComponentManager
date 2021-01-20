@@ -130,32 +130,36 @@ export async function CompareSolutionSummaries(solutionPath: string, solutionPat
         scsHeap_2.Add(scs);
     })
 
-    let intersectItems: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
-    let diffItemsA: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
-    let diffItemsB: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+    // let intersectItems: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+    // let diffItemsA: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+    // let diffItemsB: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
 
     let result = true;
-    while (scsHeap.size > 0 && scsHeap_2.size > 0) {
-        let scsheap_item = scsHeap.RemoveFirst();
-        let scsheap_2_item = scsHeap_2.RemoveFirst();
+    // while (scsHeap.size > 0 && scsHeap_2.size > 0) {
+    //     let scsheap_item = scsHeap.RemoveFirst();
+    //     let scsheap_2_item = scsHeap_2.RemoveFirst();
 
-        if (!scsheap_item.equals(scsheap_2_item)) {
-            result = false;
-            diffItemsA.push(scsheap_item)
-            diffItemsB.push(scsheap_2_item);
-        } else {
-            intersectItems.push(scsheap_item);
-        }
+    //     if (!scsheap_item.equals(scsheap_2_item)) {
+    //         result = false;
+    //         diffItemsA.push(scsheap_item)
+    //         diffItemsB.push(scsheap_2_item);
+    //     } else {
+    //         intersectItems.push(scsheap_item);
+    //     }
+    // }
+
+    let a = scsHeap.toArray().map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name }))});
+    let b = scsHeap_2.toArray().map((item) => {return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name }))});
+
+    if (a.length !== b.length) result = false;
+    const uniqueValues = new Set([...a, ...b]);
+    for (const v of uniqueValues) {
+        const aCount = a.filter(e => e === v).length;
+        const bCount = b.filter(e => e === v).length;
+        if (aCount !== bCount) result = false;
     }
-    let response: ISolutionCompareResponse = {
-        isEqual: result,
-        diffSolutionPath: diffItemsA,
-        diffSolutionPath2: diffItemsB,
-        intersectItems: intersectItems
 
-    }
-
-    return response;
+    return result;
 }
 
 /**
