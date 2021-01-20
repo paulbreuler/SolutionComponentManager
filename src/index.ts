@@ -4,6 +4,7 @@ import program from 'commander';
 import * as Commands from "./Commands"
 import chalk from 'chalk'
 import * as Helpers from './Utility/Helpers'
+var Table = require("cli-table3");
 
 class CdsCLI {
     static initialize() {
@@ -90,19 +91,45 @@ class CdsCLI {
                 console.log('  $ deploy GetSolutionComponentsSummaries b0367b29-ed8a-ea11-a812-000d3a579ca6');
             });
 
-            program.command("CompareSolutionSummaries")
+        program.command("CompareSolutionSummaries")
             .description('Compare two solution component summaries')
-            .requiredOption("--solutionPath <path_to_solution1>", "REQUIRED | Path to first solution")
-            .requiredOption("--solutionPath2 <path_to_solution2>", "REQUIRED | Path to second solution")                        
+            .requiredOption("--solutionPathA <path_to_solution1>", "REQUIRED | Path to first solution")
+            .requiredOption("--solutionPathB <path_to_solution2>", "REQUIRED | Path to second solution")
+            .option("--outputAsTable <true|false>", "Output report as a formatted table", false)
             .action(async (options) => {
-                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparing solution ${options.solutionPath} to solution ${options.solutionPath2} `));
-                let response = await Commands.CompareSolutionSummaries(options.solutionPath, options.solutionPath2);
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparing solution ${options.solutionPathA} to solution ${options.solutionPathB} `));
+                let response = await Commands.CompareSolutionSummaries(options.solutionPathA, options.solutionPathB);
+
                 Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparison Result: ${response.isEqual}`));
-                
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`There are ${response.uniqueFromPathA.length} unique result(s) From solutionPathA: ${response.uniqueFromPathA}`));
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`There are ${response.uniqueFromPathB.length} unique result(s) From solutionPathB: ${response.uniqueFromPathB}`));
+                if (options.outputAsTable)
+                    OutputTable(response);
             });
 
         program.parse(process.argv)
     }
+}
+
+// TODO make keys headers to make this more generic.
+function OutputTable(input: Commands.ISolutionCompareResponse) {
+    var table = new Table({
+        head: ["Solution"].concat(Object.keys(input.uniqueFromPathA[0])),
+        style: {
+            head: []    //disable colors in header cells
+            , border: []  //disable colors for the border
+        }
+    });
+
+    input.uniqueFromPathA.forEach((e) => {
+        table.push(["A"].concat(Object.values(e)));
+    })
+
+    input.uniqueFromPathB.forEach((e) => {
+        table.push(["B"].concat(Object.values(e)));
+    })
+
+    Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`\n${table.toString()}`));
 }
 
 CdsCLI.initialize();

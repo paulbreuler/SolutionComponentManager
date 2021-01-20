@@ -101,65 +101,76 @@ export async function GetSolutionComponentsSummaries(solutionID: string) {
 
 export interface ISolutionCompareResponse {
     isEqual: boolean;
-    diffSolutionPath: Array<SolutionComponentSummary>;
-    diffSolutionPath2: Array<SolutionComponentSummary>;
-    intersectItems: Array<SolutionComponentSummary>;
+    uniqueFromPathA: Array<IMinComponentCompare>;
+    uniqueFromPathB: Array<IMinComponentCompare>;
 }
 
-export async function CompareSolutionSummaries(solutionPath: string, solutionPath2: string) {
-    let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+export interface IMinComponentCompare {
+    componentType: number;
+    displayName: string;
+    uniqueName: string;
+    isManaged: boolean;
+}
 
-    let contents: any = await Helpers.jsonFromFile(solutionPath);
+/**
+ * Compares solution components from two given solutions from file @pathA and @pathB based on their msdyn_objecttypecode, msdyn_displayname, and msdyn_name
+ * @param pathA 
+ * @param pathB 
+ * 
+ * retruns Object of type ISolutionCompareResponse
+ */
+export async function CompareSolutionSummaries(pathA: string, pathB: string): Promise<ISolutionCompareResponse> {
+    let scsCollection_A: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+
+    let contents_A: any = await Helpers.jsonFromFile(pathA);
     // `${process.cwd()}/tests/resources/solComponentSummaries_A.json`
 
-    contents.forEach((element: any) => {
+    contents_A.forEach((element: any) => {
         let scs: SolutionComponentSummary = new SolutionComponentSummary();
 
         scs.deserializeFromJson(element);
-        scsHeap.Add(scs);
+        scsCollection_A.push(scs);
     })
 
-    let scsHeap_2: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
+    let scsCollection_B: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
 
-    let contents_2: any = await Helpers.jsonFromFile(solutionPath2);
+    let contents_B: any = await Helpers.jsonFromFile(pathB);
 
-    contents_2.forEach((element: any) => {
+    contents_B.forEach((element: any) => {
         let scs: SolutionComponentSummary = new SolutionComponentSummary();
 
         scs.deserializeFromJson(element);
-        scsHeap_2.Add(scs);
+        scsCollection_B.push(scs);
     })
-
-    // let intersectItems: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
-    // let diffItemsA: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
-    // let diffItemsB: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
 
     let result = true;
-    // while (scsHeap.size > 0 && scsHeap_2.size > 0) {
-    //     let scsheap_item = scsHeap.RemoveFirst();
-    //     let scsheap_2_item = scsHeap_2.RemoveFirst();
-
-    //     if (!scsheap_item.equals(scsheap_2_item)) {
-    //         result = false;
-    //         diffItemsA.push(scsheap_item)
-    //         diffItemsB.push(scsheap_2_item);
-    //     } else {
-    //         intersectItems.push(scsheap_item);
-    //     }
-    // }
-
-    let a = scsHeap.toArray().map((item) => { return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name }))});
-    let b = scsHeap_2.toArray().map((item) => {return (JSON.stringify({ objectTypeCode: item.msdyn_objecttypecode, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name }))});
+    // ObjectTypeCode might cause a conflict with solutions from different orgs
+    let a = scsCollection_A.map((item) => { return (JSON.stringify(<IMinComponentCompare>{ componentType: item.msdyn_componenttype, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name, isManaged: item.msdyn_ismanaged })) });
+    let b = scsCollection_B.map((item) => { return (JSON.stringify(<IMinComponentCompare>{ componentType: item.msdyn_componenttype, displayName: item.msdyn_displayname, uniqueName: item.msdyn_name, isManaged: item.msdyn_ismanaged })) });
 
     if (a.length !== b.length) result = false;
+
     const uniqueValues = new Set([...a, ...b]);
+    let diffA: Array<string> = new Array<string>();
+    let diffB: Array<string> = new Array<string>();
+
     for (const v of uniqueValues) {
-        const aCount = a.filter(e => e === v).length;
-        const bCount = b.filter(e => e === v).length;
-        if (aCount !== bCount) result = false;
+        const aUnique: Array<string> = a.filter(e => e === v);
+        const bUnique: Array<string> = b.filter(e => e === v);
+        if (aUnique.length !== bUnique.length) {
+            diffA = diffA.concat(aUnique);
+            diffB = diffB.concat(bUnique);
+            result = false;
+        }
     }
 
-    return result;
+    let respone: ISolutionCompareResponse = {
+        isEqual: result,
+        uniqueFromPathA: diffA.map((item) => { return (<IMinComponentCompare>JSON.parse(item)) }),
+        uniqueFromPathB: diffB.map((item) => { return (<IMinComponentCompare>JSON.parse(item)) }),
+    }
+
+    return respone;
 }
 
 /**
