@@ -17,7 +17,8 @@ describe('Solution Management Tests', function () {
     it("AddSolutionComponent", async function () {
         this.slow(500);
 
-        let response = await Commands.AddSolutionComponent("e79e7977-de99-ea11-a811-000d3a579cbc", 1, "CORE");
+        // Need to replace ID, componenet type, and solution number with valid strings for a target test environment
+        let response = await Commands.AddSolutionComponent("70816501-edb9-4740-a16c-6a5efbc05d84", 1, "Test");
 
         let json = await response.json();
         expect(response.status).to.equal(200);
@@ -28,7 +29,8 @@ describe('Solution Management Tests', function () {
     it("GetSolutionComponents", async function () {
         this.slow(10000);
 
-        let componentCollection = await Commands.GetSolutionComponents("CORE");
+        // Replace with valid solution unique name
+        let componentCollection = await Commands.GetSolutionComponents("Test");
 
         expect(componentCollection.length).to.be.greaterThan(0);
     });
@@ -75,7 +77,7 @@ describe('Solution Management Tests', function () {
         let isEqual = true;
         for (let i = 0; i < scsCollection.length; i++) {
             for (let j = 0; i < scsCollection_2.length; j++) {
-                isEqual = scsCollection[i].equalsNaive(scsCollection_2[j]);
+                isEqual = scsCollection[i].equals(scsCollection_2[j]);
                 if (isEqual === false)
                     break;
             }
@@ -89,8 +91,9 @@ describe('Solution Management Tests', function () {
     // More efficient but an undocumented feature
     it("GetSolutionComponentsSummary", async function () {
         this.slow(2000);
-
-        let componentCollection = await Commands.GetSolutionComponentsSummaries("b0367b29-ed8a-ea11-a812-000d3a579ca6");
+        
+        // Replace with valid solution ID
+        let componentCollection = await Commands.GetSolutionComponentsSummaries("496c3d5b-7b5a-eb11-a812-000d3a8c9261");
 
         expect(componentCollection.length).to.be.greaterThan(0);
     });

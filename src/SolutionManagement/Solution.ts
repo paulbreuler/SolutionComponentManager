@@ -110,7 +110,7 @@ export class SolutionComponentSummary extends DeserializeJSON {
     public compareTo(scs: SolutionComponentSummary) {
 
         if (!scs)
-            return 0;
+            return -1;
 
         if (this.msdyn_componenttype > scs.msdyn_componenttype) {
             return -1;
