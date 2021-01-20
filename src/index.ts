@@ -97,7 +97,8 @@ class CdsCLI {
             .action(async (options) => {
                 Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparing solution ${options.solutionPath} to solution ${options.solutionPath2} `));
                 let response = await Commands.CompareSolutionSummaries(options.solutionPath, options.solutionPath2);
-                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparison Result: ${response}`));
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparison Result: ${response.isEqual}`));
+                
             });
 
         program.parse(process.argv)

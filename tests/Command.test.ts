@@ -53,16 +53,16 @@ describe('Solution Management Tests', function () {
 
     it("Compare solution summaries (Not Equal)", async function () {
 
-        let isEqual = await Commands.CompareSolutionSummaries(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`, `${process.cwd()}/tests/resources/solComponentSummaries_B.json`);
+        let response = await Commands.CompareSolutionSummaries(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`, `${process.cwd()}/tests/resources/solComponentSummaries_B.json`);
 
-        expect(isEqual).to.be.false;
+        expect(response.isEqual).to.be.false;
     });
 
     it("Compare solution summaries (Equal)", async function () {
 
-        let isEqual = await Commands.CompareSolutionSummaries(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`, `${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
+        let response = await Commands.CompareSolutionSummaries(`${process.cwd()}/tests/resources/solComponentSummaries_A.json`, `${process.cwd()}/tests/resources/solComponentSummaries_A.json`);
 
-        expect(isEqual).to.be.true;
+        expect(response.isEqual).to.be.true;
     });
 
     // More efficient but an undocumented feature

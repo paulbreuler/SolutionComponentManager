@@ -117,4 +117,8 @@ export class Heap<T extends IHeapItem<T>>  {
         itemA.HeapIndex = itemB.HeapIndex;
         itemB.HeapIndex = itemAIndex;
     }
+
+    public toArray(){
+        return this._items;
+    }
 }

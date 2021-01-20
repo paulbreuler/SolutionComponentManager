@@ -98,6 +98,14 @@ export async function GetSolutionComponentsSummaries(solutionID: string) {
     return componentSummaryCollection;
 }
 
+
+export interface ISolutionCompareResponse {
+    isEqual: boolean;
+    diffSolutionPath: Array<SolutionComponentSummary>;
+    diffSolutionPath2: Array<SolutionComponentSummary>;
+    intersectItems: Array<SolutionComponentSummary>;
+}
+
 export async function CompareSolutionSummaries(solutionPath: string, solutionPath2: string) {
     let scsHeap: Heap<SolutionComponentSummary> = new Heap<SolutionComponentSummary>();
 
@@ -122,20 +130,33 @@ export async function CompareSolutionSummaries(solutionPath: string, solutionPat
         scsHeap_2.Add(scs);
     })
 
-    let isEqual = true;
+    let intersectItems: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+    let diffItemsA: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+    let diffItemsB: Array<SolutionComponentSummary> = new Array<SolutionComponentSummary>();
+
+    let result = true;
     while (scsHeap.size > 0 && scsHeap_2.size > 0) {
         let scsheap_item = scsHeap.RemoveFirst();
         let scsheap_2_item = scsHeap_2.RemoveFirst();
 
         if (!scsheap_item.equals(scsheap_2_item)) {
-            isEqual = false;
-            break;
+            result = false;
+            diffItemsA.push(scsheap_item)
+            diffItemsB.push(scsheap_2_item);
+        } else {
+            intersectItems.push(scsheap_item);
         }
     }
+    let response: ISolutionCompareResponse = {
+        isEqual: result,
+        diffSolutionPath: diffItemsA,
+        diffSolutionPath2: diffItemsB,
+        intersectItems: intersectItems
 
-    return isEqual;
+    }
+
+    return response;
 }
-
 
 /**
  * Generates a collection of components with relevant data based on documented solutioncomponents api call
