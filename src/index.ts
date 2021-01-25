@@ -101,8 +101,8 @@ class CdsCLI {
                 let response = await Commands.CompareSolutionSummaries(options.solutionPathA, options.solutionPathB);
 
                 Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`Comparison Result: ${response.isEqual}`));
-                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`There are ${response.uniqueFromPathA.length} unique result(s) From solutionPathA: ${response.uniqueFromPathA}`));
-                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`There are ${response.uniqueFromPathB.length} unique result(s) From solutionPathB: ${response.uniqueFromPathB}`));
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`There are ${response.uniqueFromPathA.length} unique result(s) From solutionPathA: ${JSON.stringify(response.uniqueFromPathA)}`));
+                Helpers.log(Helpers.MessageType.INFO, chalk.white.bold(`There are ${response.uniqueFromPathB.length} unique result(s) From solutionPathB: ${JSON.stringify(response.uniqueFromPathB)}`));
                 if (options.outputAsTable)
                     OutputTable(response);
             });
