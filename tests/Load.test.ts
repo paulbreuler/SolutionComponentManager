@@ -17,8 +17,14 @@ describe("PowerApps Load Tests", function () {
     access_token = (await getTestAccessToken()).access_token;
   });
 
-  it("Create 10 Facke Contacts", async function () {
-    createContacts(51);
+  it("Create 0 Fake Contacts", async function () {
+    createContacts(0);
+    // Check Status
+  });
+
+  it("Create 1 Fake Contacts", async function () {
+    createContacts(1);
+    // Check Status
   });
 
   let numBatches = 2;
@@ -82,7 +88,7 @@ describe("PowerApps Load Tests", function () {
 });
 
 export async function getTestAccessToken(): Promise<PowerAppsConnection> {
-  let response: PowerAppsConnection = await Authentication.authenticate(
+  let response: PowerAppsConnection = await Authentication.Instance.authenticate(
     AuthParamsPWD
   );
 
