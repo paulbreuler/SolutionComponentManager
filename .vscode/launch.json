@@ -1,182 +1,205 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "Mocha Tests - All",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "--timeout",
-                "999999",
-                "--colors",
-                "-r",
-                "ts-node/register",
-                "${workspaceFolder}/tests/**/*.test.ts"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "sourceMaps": true,
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "Mocha Tests - Index",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "--timeout",
-                "999999",
-                "--colors",
-                "-r",
-                "ts-node/register",
-                "${workspaceFolder}/tests/**/Index.test.ts"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "sourceMaps": true,
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "Mocha Tests - Commands",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "--timeout",
-                "999999",
-                "--colors",
-                "-r",
-                "ts-node/register",
-                "${workspaceFolder}/tests/**/Command.test.ts"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "sourceMaps": true,
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "Mocha Tests - Heap",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "--timeout",
-                "999999",
-                "--colors",
-                "-r",
-                "ts-node/register",
-                "${workspaceFolder}/tests/**/Heap.test.ts"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "sourceMaps": true,
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "AddSolutionComponent",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/dist/index.js",
-            "args": [
-                "AddSolutionComponent",
-                "--solutionUniqueName",
-                "Test",
-                "--componentId",
-                "70816501-edb9-4740-a16c-6a5efbc05d84",
-                "--componentType",
-                "1"
-            ],
-            "sourceMaps": true,
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "GetSolutionComponents",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/dist/index.js",
-            "args": [
-                "GetSolutionComponents",
-                "Test"
-            ],
-            "sourceMaps": true,
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "GetSolutionComponentsSummaries",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/dist/index.js",
-            "args": [
-                "GetSolutionComponentsSummaries",
-                "496c3d5b-7b5a-eb11-a812-000d3a8c9261"
-            ],
-            "sourceMaps": true,
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "CompareSolutionSummaries",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/dist/index.js",
-            "args": [
-                "CompareSolutionSummaries",
-                "--solutionPathA",
-                "output/solComponentSummaries_65f50035-1568-4fe3-8c91-23029097202d_2021019_232642.json",
-                "--solutionPathB",
-                "tests/resources/solComponentSummaries_B.json",
-                "--outputAsTable",
-                "true"
-            ],
-            "sourceMaps": true,
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Mocha Tests - All",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors",
+        "-r",
+        "ts-node/register",
+        "${workspaceFolder}/tests/**/*.test.ts"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Mocha - Current File",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors",
+        "-r",
+        "ts-node/register",
+        "${file}"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Mocha Tests - Index",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors",
+        "-r",
+        "ts-node/register",
+        "${workspaceFolder}/tests/**/Index.test.ts"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Mocha Tests - Commands",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors",
+        "-r",
+        "ts-node/register",
+        "${workspaceFolder}/tests/**/Command.test.ts"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Mocha Tests - Heap",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors",
+        "-r",
+        "ts-node/register",
+        "${workspaceFolder}/tests/**/Heap.test.ts"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Mocha Tests - Load",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--timeout",
+        "999999",
+        "--colors",
+        "-r",
+        "ts-node/register",
+        "${workspaceFolder}/tests/**/Load.test.ts"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "AddSolutionComponent",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/dist/index.js",
+      "args": [
+        "AddSolutionComponent",
+        "--solutionUniqueName",
+        "Test",
+        "--componentId",
+        "70816501-edb9-4740-a16c-6a5efbc05d84",
+        "--componentType",
+        "1"
+      ],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "GetSolutionComponents",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/dist/index.js",
+      "args": ["GetSolutionComponents", "Test"],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "GetSolutionComponentsSummaries",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/dist/index.js",
+      "args": [
+        "GetSolutionComponentsSummaries",
+        "496c3d5b-7b5a-eb11-a812-000d3a8c9261"
+      ],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "CompareSolutionSummaries",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/dist/index.js",
+      "args": [
+        "CompareSolutionSummaries",
+        "--solutionPathA",
+        "output/solComponentSummaries_65f50035-1568-4fe3-8c91-23029097202d_2021019_232642.json",
+        "--solutionPathB",
+        "tests/resources/solComponentSummaries_B.json",
+        "--outputAsTable",
+        "true"
+      ],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    }
+  ]
 }

@@ -7,7 +7,6 @@ tsconfig.tsbuildinfo
 
 # Test setup file
 tests/RunSettings.development.ts
-tests/load.test.ts
 src/RunSettings.development.ts
 
 # runtime output
