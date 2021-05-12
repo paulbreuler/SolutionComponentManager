@@ -62,8 +62,9 @@ export class PowerAppsConnection
 }
 
 export class Authentication {
-  private powerAppsConnections = new Array<PowerAppsConnection>();
   private static instance: Authentication;
+
+  private powerAppsConnections = new Array<PowerAppsConnection>();
   private currentConnection: PowerAppsConnection;
 
   static get Instance(): Authentication {
@@ -73,6 +74,8 @@ export class Authentication {
     this.instance = new Authentication();
     return this.instance;
   }
+
+  private constructor() {}
 
   public getConnections() {
     return this.powerAppsConnections;
@@ -133,7 +136,9 @@ export class Authentication {
 
     let connection: PowerAppsConnection = new PowerAppsConnection();
     connection.deserializeFromJson(json);
-    connection.name = config.name;
+    connection.name = config.name
+      ? config.name
+      : (this.powerAppsConnections.length + 1).toString();
 
     this.powerAppsConnections.push(connection);
     this.currentConnection = connection;

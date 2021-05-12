@@ -12,11 +12,16 @@ import {
 } from "./SolutionManagement/Solution";
 import { Heap } from "./Utility/Heap";
 import * as Helpers from "./Utility/Helpers";
+import { IAuthParams } from "./Authentication/AuthParams";
+
+export const Authenticate = async (authParams: IAuthParams) => {
+  let response: PowerAppsConnection = await Authentication.Instance.authenticate(
+    authParams
+  );
+};
 
 export const WhoAmI = async () => {
-  let response: PowerAppsConnection = await Authentication.Instance.authenticate(
-    AuthParamsPWD
-  );
+  let response: PowerAppsConnection = Authentication.Instance.CurrentConnection
 
   let r = await fetch(`${EnvironmentDetails.org_url}/WhoAmI`, {
     method: "GET",

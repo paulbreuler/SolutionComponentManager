@@ -9,7 +9,7 @@ describe("PowerApps Authentication Tests", function () {
   let access_token: string | null = null;
   let connection: PowerAppsConnection | null = null;
 
-  it("Authenticate to PowerApps | password grant", async function () {
+  it("Authenticate to PowerApps | password grant | Singleton", async function () {
     connection = await getTestAccessToken();
 
     expect(connection).to.not.be.null;
